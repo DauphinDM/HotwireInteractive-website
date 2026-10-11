@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brutalist Base */
+html {
+  scroll-behavior: smooth;
+  background-color: #080808;
+  color: #F5F5F5;
+  height: 100%; /* Added for flexbox footer */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  background-color: #080808;
+  -webkit-font-smoothing: antialiased;
+  
+  /* Added to push footer to bottom */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add this to make the content area grow and push the footer down */
+main {
+  flex: 1;
+}
+
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: #FF5D1B;
+  color: #080808;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 3px solid #FFAA00;
+  outline-offset: 4px;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.navbar-shell {
+  position: fixed;
+  background: rgba(8, 8, 8, 0.94);
+  border-bottom: 2.5px solid rgba(255, 93, 27, 0.92);
+  box-shadow: 0 9px 19px -16px #FF5D1B;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.navbar-shell::after {
+  position: absolute;
+  right: 0;
+  bottom: -15px;
+  left: 0;
+  height: 15px;
+  background: linear-gradient(to bottom, rgba(255, 93, 27, 0.82), rgba(255, 93, 27, 0.28) 3px, transparent 100%);
+  content: '';
+  pointer-events: none;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-reveal-delay="1"] {
+  transition-delay: 120ms;
+}
+
+[data-reveal-delay="2"] {
+  transition-delay: 240ms;
+}
+
+[data-reveal-delay="3"] {
+  transition-delay: 360ms;
+}
+
+#mobile-menu:not(.hidden) {
+  animation: drawer-in 0.25s ease-out both;
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hard Brutalist Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080808;
+  border-left: 1px solid #222222;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF5D1B;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF6E2D;
+}
+
+/* Brutalist Interactive Buttons */
+.brutal-btn-primary {
+  background: #FF5D1B;
+  color: #080808;
+  font-weight: 800;
+  border: 2px solid #FFFFFF;
+  box-shadow: 4px 4px 0px #FFFFFF;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+}
+
+.brutal-btn-primary:hover {
+  background: #FF6E2D;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #FFFFFF;
+}
+
+.brutal-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #FFFFFF;
+}
+
+.brutal-btn-secondary {
+  background: #161616;
+  color: #F5F5F5;
+  font-weight: 700;
+  border: 2px solid #444444;
+  box-shadow: 4px 4px 0px #FF5D1B;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
+}
+
+.brutal-btn-secondary:hover {
+  border-color: #FF5D1B;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #FF5D1B;
+}
+
+.brutal-btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px #FF5D1B;
+}
+
+/* Industrial Grid Background (Strictly solid 1px lines, NO gradients) */
+.brutal-grid {
+  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(to right, #171717 1px, transparent 1px),
+    linear-gradient(to bottom, #171717 1px, transparent 1px);
+}
