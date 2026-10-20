@@ -2,27 +2,32 @@ import '../css/style.css';
 import { initCanvasBackground } from './canvas-bg.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize brutalist spark matrix
+  // 1. Initialize brutalist spark matrix — always animates
   initCanvasBackground('cyber-canvas');
 
+  // 2. Reveal animations — stagger on load, then intersection-observer as backup
   const revealItems = document.querySelectorAll('[data-reveal]');
-  const revealItem = (item) => item.classList.add('is-visible');
+
+  revealItems.forEach((item, index) => {
+    const delay = parseInt(item.getAttribute('data-reveal-delay') || '0', 10);
+    window.setTimeout(() => {
+      item.classList.add('is-visible');
+    }, delay * 300);
+  });
 
   if ('IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        revealItem(entry.target);
+        entry.target.classList.add('is-visible');
         observer.unobserve(entry.target);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
 
     revealItems.forEach((item) => revealObserver.observe(item));
-  } else {
-    revealItems.forEach(revealItem);
   }
 
-  // 2. Mobile Menu Toggle
+  // 3. Mobile Menu Toggle
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   const mobileLinks = document.querySelectorAll('.mobile-nav-link');
@@ -42,39 +47,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Contact Form Interactive Handler
+  // 4. Contact Form — POST to PHP handler, emails contact@hotwireinteractive.co.uk
   const contactForm = document.getElementById('studio-contact-form');
-  const toast = document.getElementById('cyber-toast');
+  const submitBtn = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
+  const status = document.getElementById('contact-form-status');
+
+  // 5. Scroll-to buttons (data-scroll-to="#section-id")
+  document.querySelectorAll('[data-scroll-to]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = document.querySelector(btn.getAttribute('data-scroll-to'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 
   if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending...';
+      }
+      if (status) {
+        status.classList.add('hidden');
+        status.textContent = '';
+      }
+
       const formData = new FormData(contactForm);
-      const category = contactForm.querySelector('#category');
-      const categoryLabel = category.options[category.selectedIndex].text;
-      const subject = `${categoryLabel} from ${formData.get('name')}`;
-      const body = [
-        `Name / studio: ${formData.get('name')}`,
-        `Email: ${formData.get('email')}`,
-        `Inquiry type: ${categoryLabel}`,
-        '',
-        formData.get('message'),
-      ].join('\n');
 
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = 'Preparing email...';
+      try {
+        const response = await fetch('contact.php', {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
 
-      window.location.href = `mailto:contact@hotwireinteractive.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      contactForm.reset();
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalText;
-
-      if (toast) {
-        toast.classList.remove('hidden');
-        window.setTimeout(() => toast.classList.add('hidden'), 6000);
+        if (response.ok && result.success) {
+          contactForm.reset();
+          if (status) {
+            status.textContent = 'Message sent — we’ll be in touch.';
+            status.classList.remove('text-industrial-400');
+            status.classList.add('text-hotwire', 'font-bold');
+            status.classList.remove('hidden');
+          }
+        } else {
+          if (status) {
+            status.textContent = result.error || 'Failed to send. Try again.';
+            status.classList.remove('text-hotwire', 'font-bold');
+            status.classList.add('text-industrial-400');
+            status.classList.remove('hidden');
+          }
+        }
+      } catch (err) {
+        if (status) {
+          status.textContent = 'Network error. Try emailing us directly.';
+          status.classList.remove('text-hotwire', 'font-bold');
+          status.classList.add('text-industrial-400');
+          status.classList.remove('hidden');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Send message';
+        }
       }
     });
   }

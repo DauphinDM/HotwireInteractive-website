@@ -10,25 +10,24 @@
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Hotwire Interactive coming soon" />
-  <meta name="description" content="Hotwire Interactive is an independent studio based in Belgium, preparing new work. Something new is coming soon." />
+  <meta property="og:image:alt" content="Hotwire Interactive" />
+  <meta name="description" content="Hotwire Interactive is an independent studio based in Belgium. Games coming soon. Websites available now. Multipurpose digital studio." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://hotwireinteractive.co.uk/" />
-  <meta property="og:title" content="Hotwire Interactive | Coming Soon" />
-  <meta property="og:description" content="Hotwire Interactive is an independent studio based in Belgium. Something new is coming soon." />
+  <meta property="og:title" content="Hotwire Interactive | Games & Websites" />
+  <meta property="og:description" content="Independent studio based in Belgium. Games coming soon. Websites available now." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Hotwire Interactive" />
-  <meta property="og:locale" content="en_GB" />
   <meta property="og:url" content="https://hotwireinteractive.co.uk/" />
-  <meta property="og:image:alt" content="Hotwire Interactive coming soon" />
+  <meta property="og:image:alt" content="Hotwire Interactive" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Hotwire Interactive | Coming Soon" />
-  <meta name="twitter:description" content="An independent studio based in Belgium. Something new is coming soon." />
+  <meta name="twitter:title" content="Hotwire Interactive | Games & Websites" />
+  <meta name="twitter:description" content="Independent studio based in Belgium. Games coming soon. Websites available now." />
   <meta name="twitter:image" content="https://hotwireinteractive.co.uk/social-preview-new.png" />
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  
+
   <!-- Google Fonts: Outfit, JetBrains Mono, Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,7 +53,7 @@
           "@id": "https://hotwireinteractive.co.uk/#website",
           "url": "https://hotwireinteractive.co.uk/",
           "name": "Hotwire Interactive",
-          "description": "An independent studio based in Belgium. Something new is coming soon.",
+          "description": "Independent studio based in Belgium. Games coming soon. Websites available now.",
           "publisher": {
             "@id": "https://hotwireinteractive.co.uk/#organization"
           }
@@ -62,16 +61,16 @@
       ]
     }
   </script>
-  <script type="module" crossorigin src="/assets/main-BTbktpgg.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/canvas-bg-B6qiZI5w.js">
-  <link rel="stylesheet" crossorigin href="/assets/canvas-bg-BNnkebal.css">
+  <script type="module" crossorigin src="/assets/main-CyyiO4JW.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/canvas-bg-BuiwPppR.js">
+  <link rel="stylesheet" crossorigin href="/assets/canvas-bg-4WXhCWF0.css">
 </head>
 
 <body class="bg-pitch text-industrial-100 font-sans antialiased relative min-h-screen selection:bg-hotwire selection:text-pitch">
   <a href="#main-content" class="skip-link">Skip to content</a>
-  
+
   <!-- Brutalist Spark Matrix Background (Flat Solid Palette) -->
-  <canvas id="cyber-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-80"></canvas>
+  <canvas id="cyber-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-80" aria-hidden="true"></canvas>
 
   <!-- Industrial Engineering Grid Lines -->
   <div class="fixed inset-0 brutal-grid pointer-events-none z-0"></div>
@@ -79,11 +78,11 @@
   <!-- STICKY NAVBAR -->
   <header id="navbar" class="navbar-shell fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      
+
       <!-- Studio Monogram & Prominent "HOTWIRE" Branding -->
-      <a href="#" class="flex items-center gap-3.5 group">
+      <a href="/" class="flex items-center gap-3.5 group">
         <div class="w-10 h-10 flex items-center justify-center p-0.5 group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] transition-transform">
-          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
+          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" aria-hidden="true">
             <rect x="22" y="18" width="14" height="64" fill="#FF5D1B"/>
             <rect x="64" y="18" width="14" height="64" fill="#FF5D1B"/>
             <polygon points="36,44 54,36 46,62 64,54 64,62 46,70 54,44 36,52" fill="#FFFFFF"/>
@@ -101,20 +100,21 @@
       <!-- Desktop Nav Links -->
       <nav class="hidden lg:flex items-center gap-8 font-mono text-xs font-bold uppercase tracking-wider">
         <a href="#about" class="text-industrial-300 hover:text-hotwire transition-colors">Studio</a>
+        <a href="#services" class="text-industrial-300 hover:text-hotwire transition-colors">Services</a>
         <a href="/team/" class="text-industrial-300 hover:text-hotwire transition-colors">Team</a>
         <a href="#contact" class="text-industrial-300 hover:text-hotwire transition-colors">Contact</a>
       </nav>
 
       <!-- Right Header Actions -->
       <div class="hidden lg:flex items-center gap-4">
-        <a href="#contact" class="brutal-btn-primary px-5 py-2 font-mono text-xs tracking-wider uppercase inline-block">
-          Contact us
-        </a>
+        <button type="button" class="brutal-btn-primary px-5 py-2 font-mono text-xs tracking-wider uppercase inline-block" data-scroll-to="#services">
+          Websites
+        </button>
       </div>
 
       <!-- Mobile Menu Button -->
-      <button id="mobile-menu-btn" class="lg:hidden text-white p-2 border-2 border-industrial-600 bg-surface" aria-label="Toggle mobile menu" aria-controls="mobile-menu" aria-expanded="false">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button id="mobile-menu-btn" type="button" class="lg:hidden text-white p-2 border-2 border-industrial-600 bg-surface" aria-label="Toggle mobile menu" aria-controls="mobile-menu" aria-expanded="false">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
         </svg>
       </button>
@@ -125,6 +125,7 @@
     <div id="mobile-menu" class="hidden lg:hidden mt-4 p-6 bg-surface border-2 border-hotwire mx-2 shadow-brutal-orange">
       <div class="flex flex-col gap-4 font-mono font-bold text-xs uppercase">
         <a href="#about" class="mobile-nav-link text-white hover:text-hotwire py-2 border-b border-industrial-700">Studio</a>
+        <a href="#services" class="mobile-nav-link text-white hover:text-hotwire py-2 border-b border-industrial-700">Services</a>
         <a href="/team/" class="mobile-nav-link text-white hover:text-hotwire py-2 border-b border-industrial-700">Team</a>
         <a href="#contact" class="mobile-nav-link text-white hover:text-hotwire py-2 border-b border-industrial-700">Contact</a>
         <div class="pt-2">
@@ -140,32 +141,33 @@
   <main id="main-content" class="relative z-10">
 
     <!-- HERO SECTION -->
-    <section id="hero" aria-labelledby="hero-title" class="relative min-h-screen flex items-center justify-center pt-32 pb-24 px-6 border-b-2 border-industrial-700 overflow-hidden">
-      
+    <section id="hero" aria-labelledby="hero-title" class="relative min-h-[100dvh] min-h-screen flex items-center justify-center pt-32 pb-24 px-6 border-b-2 border-industrial-700 overflow-hidden">
       <div class="max-w-6xl mx-auto text-left relative z-10 w-full">
-        
+
         <!-- Massive Brutalist Headline (Flat solid colors, ZERO gradients) -->
         <h1 id="hero-title" data-reveal data-reveal-delay="0" class="reveal text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-black tracking-tight leading-[0.92] uppercase mb-8 text-white">
-          SOMETHING NEW<br />
-          IS <span class="text-hotwire">COMING SOON.</span>
+          HOTWIRE<br />
+          INTERACTIVE
         </h1>
 
         <!-- Studio Premise Statement -->
         <div data-reveal data-reveal-delay="1" class="reveal border-l-4 border-hotwire pl-6 mb-12 max-w-3xl">
           <p class="text-lg sm:text-2xl font-mono text-industrial-200 leading-relaxed font-medium">
-            Hotwire Interactive is an independent studio based in Belgium. We are shaping the next chapter now. More details will be shared when the time is right.
+            Independent studio based in Belgium.<br />
+            <span class="text-hotwire font-bold">Games coming soon.</span> <span class="text-white font-bold">Websites available now.</span><br />
+            Multipurpose digital studio — building what's next.
           </p>
         </div>
 
         <!-- Primary Action CTAs -->
         <div data-reveal data-reveal-delay="2" class="reveal flex flex-col sm:flex-row items-stretch sm:items-center gap-5 w-full sm:w-auto">
-          <a href="#contact" class="brutal-btn-primary px-8 py-4 font-mono text-sm tracking-wider uppercase text-center inline-block">
-            Stay in contact
-          </a>
+          <button type="button" class="brutal-btn-primary px-8 py-4 font-mono text-sm tracking-wider uppercase text-center inline-block" data-scroll-to="#services">
+            View Services
+          </button>
 
-          <a href="#about" class="brutal-btn-secondary px-8 py-4 font-mono text-sm tracking-wider uppercase text-center inline-block">
-            ABOUT THE STUDIO
-          </a>
+          <button type="button" class="brutal-btn-secondary px-8 py-4 font-mono text-sm tracking-wider uppercase text-center inline-block" data-scroll-to="#about">
+            About the Studio
+          </button>
 
           <div class="hidden lg:flex items-center gap-3 pl-6 font-mono text-xs text-industrial-400">
           </div>
@@ -176,9 +178,9 @@
 
     <!-- ABOUT THE STUDIO SECTION -->
     <section id="about" aria-labelledby="about-title" class="py-24 px-6 max-w-7xl mx-auto border-b-2 border-industrial-700">
-      
+
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
+
         <!-- Studio Manifesto -->
         <div data-reveal class="reveal lg:col-span-12">
           <div class="font-mono text-xs font-bold uppercase tracking-widest text-hotwire mb-3">
@@ -191,16 +193,16 @@
 
           <div class="space-y-4 text-industrial-200 text-base sm:text-lg leading-relaxed mb-10 font-sans">
             <p>
-              <strong class="text-white font-bold">Hotwire Interactive</strong> is an independent studio headquartered in Belgium. We are building the foundation for what comes next.
+              <strong class="text-white font-bold">Hotwire Interactive</strong> is an independent studio headquartered in Belgium. We are multipurpose: we build websites for businesses and individuals who want a real online presence, and we are a game studio with titles on the way.
             </p>
             <p>
-              The studio is currently in formation. More about our work, direction, and first public release will be shared when the signal is ready.
+              Games are coming soon. Websites are available now. More arms opening as the studio grows.
             </p>
           </div>
 
           <!-- Studio Highlights Blocks -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            
+
             <div data-reveal data-reveal-delay="1" class="reveal p-5 bg-surface border-2 border-industrial-600">
               <div class="font-mono text-[10px] text-hotwire font-black uppercase mb-1">Location</div>
               <h3 class="font-display font-black text-white text-base uppercase mb-1">Belgium</h3>
@@ -209,8 +211,8 @@
 
             <div data-reveal data-reveal-delay="2" class="reveal p-5 bg-surface border-2 border-industrial-600">
               <div class="font-mono text-[10px] text-amber font-black uppercase mb-1">Focus</div>
-              <h3 class="font-display font-black text-white text-base uppercase mb-1">In Formation</h3>
-              <p class="text-xs text-industrial-400 font-mono">New work is taking shape.</p>
+              <h3 class="font-display font-black text-white text-base uppercase mb-1">Multipurpose</h3>
+              <p class="text-xs text-industrial-400 font-mono">Games + websites + more.</p>
             </div>
 
             <div data-reveal data-reveal-delay="3" class="reveal p-5 bg-surface border-2 border-industrial-600">
@@ -226,9 +228,68 @@
 
     </section>
 
+    <!-- SERVICES SECTION -->
+    <section id="services" aria-labelledby="services-title" class="py-24 px-6 max-w-7xl mx-auto border-b-2 border-industrial-700">
+
+      <div data-reveal class="reveal text-center mb-16">
+        <div class="font-mono text-xs font-bold uppercase tracking-widest text-hotwire mb-2">
+          What we do
+        </div>
+        <h2 id="services-title" class="text-4xl sm:text-6xl font-display font-black text-white uppercase mb-4">
+          SERVICES
+        </h2>
+        <p class="text-industrial-300 text-sm font-mono max-w-2xl mx-auto">
+          Hotwire Interactive is multipurpose. We build websites for businesses and individuals who want a real online presence — and we're a game studio too, with titles on the way. More arms opening in the future.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Website Service Card -->
+        <div data-reveal data-reveal-delay="1" class="reveal bg-surface border-3 border-hotwire p-8 sm:p-12 shadow-brutal-orange group relative">
+          <div class="font-mono text-[10px] text-hotwire font-black uppercase mb-4">Available now</div>
+          <h3 class="font-display font-black text-white text-2xl sm:text-3xl uppercase mb-4">Websites</h3>
+          <p class="text-industrial-200 text-sm font-sans leading-relaxed mb-6">
+            We design and build websites for businesses, freelancers, and anyone who wants a nice place online. Brutalist, intentional, no AI-slop templates.
+          </p>
+          <ul class="space-y-3 font-mono text-xs text-industrial-300 mb-8">
+            <li class="flex items-start gap-2"><svg class="w-3 h-3 shrink-0 text-hotwire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom design, not templates</li>
+            <li class="flex items-start gap-2"><svg class="w-3 h-3 shrink-0 text-hotwire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Dark-mode ready, mobile-first</li>
+            <li class="flex items-start gap-2"><svg class="w-3 h-3 shrink-0 text-hotwire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Contact forms that actually send</li>
+            <li class="flex items-start gap-2"><svg class="w-3 h-3 shrink-0 text-hotwire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> SEO-ready markup</li>
+          </ul>
+          <button type="button" class="brutal-btn-primary w-full py-3 sm:py-4 font-mono text-xs tracking-wider uppercase text-pitch font-black" data-scroll-to="#contact">
+            Get a website
+          </button>
+        </div>
+
+        <!-- Games Service Card -->
+        <div data-reveal data-reveal-delay="2" class="reveal bg-surface border-3 border-industrial-600 p-8 sm:p-12 shadow-brutal-orange group relative opacity-90">
+          <div class="font-mono text-[10px] text-industrial-400 font-black uppercase mb-4">Coming soon</div>
+          <h3 class="font-display font-black text-industrial-300 text-2xl sm:text-3xl uppercase mb-4">Games</h3>
+          <p class="text-industrial-400 text-sm font-sans leading-relaxed mb-6">
+            Hotwire Interactive is also a game studio. First titles are in formation. More details when the signal is ready.
+          </p>
+          <button type="button" class="brutal-btn-secondary w-full py-3 sm:py-4 font-mono text-xs tracking-wider uppercase text-industrial-300 font-black border-industrial-500" data-scroll-to="#about">
+            Watch this space
+          </button>
+        </div>
+
+        <!-- Future Service Card -->
+        <div data-reveal data-reveal-delay="3" class="reveal bg-surface border-3 border-industrial-700 p-8 sm:p-12 shadow-brutal-orange group relative opacity-70">
+          <div class="font-mono text-[10px] text-industrial-500 font-black uppercase mb-4">Future</div>
+          <h3 class="font-display font-black text-industrial-400 text-2xl sm:text-3xl uppercase mb-4">More</h3>
+          <p class="text-industrial-500 text-sm font-sans leading-relaxed mb-6">
+            Multipurpose means more arms opening. New services arriving as the studio grows.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
     <!-- CONTACT SECTION -->
     <section id="contact" aria-labelledby="contact-title" class="py-24 px-6 max-w-4xl mx-auto">
-      
+
       <div data-reveal class="reveal text-center mb-12">
         <div class="font-mono text-xs font-bold uppercase tracking-widest text-hotwire mb-2">
           Contact the studio
@@ -237,17 +298,14 @@
           CONNECT WITH <span class="text-hotwire">HOTWIRE</span>
         </h2>
         <p class="text-industrial-300 text-sm font-mono max-w-lg mx-auto">
-          For studio inquiries, introductions, or future updates, open a direct line to Hotwire Interactive.
+          For studio inquiries, website projects, or future updates, open a direct line to Hotwire Interactive.
         </p>
-        <a href="mailto:contact@hotwireinteractive.co.uk" class="inline-block mt-4 font-mono text-xs font-bold text-hotwire hover:text-white transition-colors">
-          contact@hotwireinteractive.co.uk
-        </a>
       </div>
 
       <!-- Brutalist Form Card (Solid flat colors, sharp borders, zero gradients) -->
       <div data-reveal data-reveal-delay="1" class="reveal bg-surface border-3 border-hotwire p-8 sm:p-12 shadow-brutal-orange">
-        <form id="studio-contact-form" class="space-y-6">
-          
+        <form id="studio-contact-form" class="space-y-6" novalidate>
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label for="name" class="block font-mono text-xs uppercase tracking-wider text-white mb-2 font-bold">
@@ -268,8 +326,9 @@
             <label for="category" class="block font-mono text-xs uppercase tracking-wider text-white mb-2 font-bold">
               Inquiry type
             </label>
-            <select id="category" name="category" class="w-full px-4 py-3.5 bg-pitch border-2 border-industrial-600 text-white font-mono text-sm focus:outline-none focus:border-hotwire transition-colors">
-              <option value="studio">Studio Inquiry</option>
+            <select id="category" name="category" aria-label="Inquiry type" class="w-full px-4 py-3.5 bg-pitch border-2 border-industrial-600 text-white font-mono text-sm focus:outline-none focus:border-hotwire transition-colors">
+              <option value="website">Website project</option>
+              <option value="games">Games / studio inquiry</option>
               <option value="press">Press & Media Inquiry</option>
               <option value="collaboration">Creative Collaboration</option>
               <option value="other">General Inquiry</option>
@@ -284,9 +343,10 @@
           </div>
 
           <div>
-            <button type="submit" class="brutal-btn-primary w-full py-4 font-mono text-sm tracking-wider uppercase text-pitch font-black">
+            <button type="submit" id="contact-submit-btn" class="brutal-btn-primary w-full py-4 font-mono text-sm tracking-wider uppercase text-pitch font-black">
               Send message
             </button>
+            <p id="contact-form-status" class="font-mono text-xs text-industrial-400 hidden mt-2"></p>
           </div>
 
         </form>
@@ -299,11 +359,11 @@
   <!-- BRUTALIST FOOTER -->
   <footer class="relative z-10 border-t-2 border-industrial-700 bg-pitch py-12 px-6">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-      
+
       <!-- Brand and domain -->
       <div class="flex items-center gap-3.5">
         <div class="w-10 h-10 flex items-center justify-center p-0.5">
-          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
+          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" aria-hidden="true">
             <rect x="22" y="18" width="14" height="64" fill="#FF5D1B"/>
             <rect x="64" y="18" width="14" height="64" fill="#FF5D1B"/>
             <polygon points="36,44 54,36 46,62 64,54 64,62 46,70 54,44 36,52" fill="#FFFFFF"/>
@@ -323,6 +383,7 @@
       <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 font-mono text-xs font-bold text-industrial-300">
         <a href="mailto:contact@hotwireinteractive.co.uk" class="hover:text-hotwire transition-colors">Email studio</a>
         <a href="#about" class="hover:text-hotwire transition-colors">Studio</a>
+        <a href="#services" class="hover:text-hotwire transition-colors">Services</a>
         <a href="/team/" class="hover:text-hotwire transition-colors">Team</a>
         <a href="#hero" class="hover:text-white transition-colors">Back to top</a>
       </div>
@@ -338,8 +399,8 @@
   <!-- BRUTALIST TOAST NOTIFICATION -->
   <div id="cyber-toast" role="status" aria-live="polite" class="hidden fixed bottom-6 right-6 z-50 p-4 bg-surface border-2 border-hotwire shadow-brutal-orange max-w-md font-mono">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-hotwire text-pitch flex items-center justify-center font-black">
-        ✓
+      <div class="w-8 h-8 bg-hotwire text-pitch flex items-center justify-center font-black" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
       <div>
         <div class="font-bold text-sm text-white">Message ready</div>

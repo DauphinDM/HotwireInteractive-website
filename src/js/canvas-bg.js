@@ -16,7 +16,6 @@ export function initCanvasBackground(canvasId = 'cyber-canvas') {
   const sparks = [];
   const sparkCount = Math.min(Math.floor((width * height) / 20000), 45);
   const mouse = { x: null, y: null, radius: 140 };
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Flat brutalist solid colors (No gradients)
   const COLORS = ['#FF5D1B', '#FF5D1B', '#FFAA00', '#FFFFFF', '#FF6E2D'];
@@ -82,12 +81,7 @@ export function initCanvasBackground(canvasId = 'cyber-canvas') {
     animationFrameId = requestAnimationFrame(animate);
   }
 
-  if (prefersReducedMotion) {
-    ctx.clearRect(0, 0, width, height);
-    sparks.forEach((spark) => spark.draw());
-  } else {
-    animate();
-  }
+  animate();
 
   function handleResize() {
     width = canvas.width = window.innerWidth;
