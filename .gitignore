@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 /node_modules
 /playwright-report/
 /test-results/
 *.log
 .DS_Store
+=======
+/DEPLOY.md
+/node_modules
+/dist
+>>>>>>> 784a34668a5015fe962023f3e7222e0a6e5677ef

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Hotwire Interactive
 
 A small, accessible, multi-page site for Hotwire’s **website design/development services and independent studio projects**. Built with semantic HTML, Tailwind CSS, vanilla JavaScript, and Vite. The canonical production origin is **https://hotwireinteractive.co.uk**.
@@ -74,3 +75,8 @@ Typography uses Space Grotesk headings and Manrope body text. Page/section entra
 The legal pages are linked from every footer and from both contact-form variants. They describe the current PHP contact service, quiz storage, and remote font requests. **Review `LEGAL-REVIEW.md` before publishing:** verified operator registration/address details, provider arrangements, retention periods, and legal review are still owner tasks. Website-use terms do not replace a client service agreement.
 
 See [DEPLOY.md](DEPLOY.md). Upload the complete contents of `dist/`, including the hidden `.htaccess` file. Deployments belong at the domain root, not a subdirectory. The current repository tracks build output; rebuild `dist/` whenever publishing source changes.
+=======
+# The official website for Hotwire Interactive LLC.
+
+Go to the following url to see the website: https://hotwireinteractive.co.uk/
+>>>>>>> 784a34668a5015fe962023f3e7222e0a6e5677ef
