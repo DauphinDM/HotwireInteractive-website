@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#11110f"/>
+  <g transform="translate(64 48)">
+    <rect width="54" height="54" fill="none" stroke="#ff5d1b" stroke-width="3"/>
+    <path d="M12 10h7v34h-7zm23 0h7v34h-7z" fill="#ff5d1b"/>
+    <path d="m19 24 13-8-5 14 8-4v6l-13 8 5-14-8 4z" fill="#f5f5f5"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="138" y="83" fill="#f5f5f5" font-size="28" font-weight="700">HOTWIRE INTERACTIVE</text>
+    <text x="64" y="230" fill="#f5f5f5" font-size="67" font-weight="700">Website design</text>
+    <text x="64" y="310" fill="#f5f5f5" font-size="67" font-weight="700">&amp; development.</text>
+    <text x="64" y="382" fill="#b8b8ad" font-size="24">For your business, your work, or your next idea.</text>
+    <text x="64" y="485" fill="#ff905f" font-size="24">Find your website type with our quick quiz.</text>
+    <text x="64" y="565" fill="#b8b8ad" font-size="20">Independent studio. Belgium.</text>
+    <rect x="850" y="148" width="286" height="372" rx="2" fill="#ff5d1b"/>
+    <text x="880" y="199" fill="#11110f" font-size="17">What should yours do?</text>
+    <text x="880" y="268" fill="#11110f" font-size="32" font-weight="700">Inquiries.</text>
+    <text x="880" y="323" fill="#11110f" font-size="32" font-weight="700">Bookings.</text>
+    <text x="880" y="378" fill="#11110f" font-size="32" font-weight="700">Sales.</text>
+    <path d="M880 415h226" stroke="#87320f"/>
+    <text x="880" y="458" fill="#11110f" font-size="17">4 questions. No sign-up.</text>
+  </g>
+</svg>

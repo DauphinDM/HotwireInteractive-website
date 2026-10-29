@@ -1,17 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./*.html",
-    "./team/**/*.html",
-    "./src/**/*.{js,ts,jsx,tsx,html}",
-  ],
+  content: {
+    relative: true,
+    files: ["./*.html", "./websites/**/*.html", "./team/**/*.html", "./privacy/**/*.html", "./terms/**/*.html", "./cookies/**/*.html", "./src/**/*.{js,html}"],
+  },
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        pitch: '#080808',
-        surface: '#121212',
+        pitch: '#11110f',
+        surface: '#1b1c19',
         'surface-elevated': '#1A1A1A',
         hotwire: {
           DEFAULT: '#FF5D1B',
@@ -31,9 +29,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Outfit', 'Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Space Grotesk', 'Arial', 'sans-serif'],
+        mono: ['ui-monospace', 'monospace'],
       },
       boxShadow: {
         'brutal-sm': '3px 3px 0px #FF5D1B',

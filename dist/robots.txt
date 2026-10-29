@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://studio.hotwireinteractive.co.uk/sitemap.xml
+Sitemap: https://hotwireinteractive.co.uk/sitemap.xml

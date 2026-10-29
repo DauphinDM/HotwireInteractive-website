@@ -1,19 +1,42 @@
-import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export default defineConfig({
-  root: '.',
+const root = fileURLToPath(new URL('.', import.meta.url));
+
+// Vite does not execute PHP. Never serve PHP source as a successful contact API.
+function phpRequiredMiddleware(req, res, next) {
+  if (!req.url?.split('?')[0].startsWith('/api/')) return next();
+  res.statusCode = 503;
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.end(JSON.stringify({ ok: false, message: 'The contact service needs PHP. Run the built site on a PHP-enabled server; Vite cannot send inquiries.' }));
+}
+
+export default {
+  root,
+  appType: 'mpa',
+  plugins: [{
+    name: 'php-contact-safety',
+    configureServer(server) { server.middlewares.use(phpRequiredMiddleware); },
+    configurePreviewServer(server) { server.middlewares.use(phpRequiredMiddleware); },
+  }],
   server: {
     port: 5173,
-    host: true,
+    host: '127.0.0.1',
+    strictPort: true,
   },
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        team: resolve(__dirname, 'team/index.html'),
-        dauphindm: resolve(__dirname, 'team/dauphindm/index.html'),
-        liamvl: resolve(__dirname, 'team/liamvl/index.html'),
+        main: resolve(root, 'index.html'),
+        websites: resolve(root, 'websites/index.html'),
+        privacy: resolve(root, 'privacy/index.html'),
+        terms: resolve(root, 'terms/index.html'),
+        cookies: resolve(root, 'cookies/index.html'),
+        team: resolve(root, 'team/index.html'),
+        dauphindm: resolve(root, 'team/dauphindm/index.html'),
+        liamvl: resolve(root, 'team/liamvl/index.html'),
+        notFound: resolve(root, '404.html'),
       },
     },
     outDir: 'dist',
@@ -21,5 +44,4 @@ export default defineConfig({
     sourcemap: false,
     minify: 'esbuild',
   },
-});
-
+};

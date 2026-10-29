@@ -1,104 +1,84 @@
 <!DOCTYPE html>
-<html lang="en-GB" class="scroll-smooth">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Team | Hotwire Interactive</title>
-  <meta name="description" content="Meet the people shaping Hotwire Interactive, an independent studio based in Belgium." />
+  <meta name="description" content="Meet Dauphin de Moulin and Liam van Looveren, the people shaping Hotwire Interactive, an independent studio based in Belgium." />
   <meta name="theme-color" content="#080808" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://studio.hotwireinteractive.co.uk/team/" />
+  <link rel="canonical" href="https://hotwireinteractive.co.uk/team/" />
   <meta property="og:title" content="Team | Hotwire Interactive" />
   <meta property="og:description" content="Meet the people shaping Hotwire Interactive, an independent studio based in Belgium." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://studio.hotwireinteractive.co.uk/team/" />
-  <meta property="og:image" content="https://studio.hotwireinteractive.co.uk/social-preview-new.png" />
-  <meta property="og:image:alt" content="Hotwire Interactive team" />
+  <meta property="og:site_name" content="Hotwire Interactive" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:url" content="https://hotwireinteractive.co.uk/team/" />
+  <meta property="og:image" content="https://hotwireinteractive.co.uk/social-websites.png" />
+  <meta property="og:image:alt" content="Hotwire Interactive — independent studio, Belgium." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Team | Hotwire Interactive" />
+  <meta name="twitter:description" content="Meet the people shaping Hotwire Interactive, an independent studio based in Belgium." />
+  <meta name="twitter:image" content="https://hotwireinteractive.co.uk/social-websites.png" />
+  <meta name="twitter:image:alt" content="Hotwire Interactive — independent studio, Belgium." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/src/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body class="bg-pitch text-industrial-100 font-sans antialiased relative min-h-screen selection:bg-hotwire selection:text-pitch">
+<body class="text-industrial-100 antialiased">
   <a href="#main-content" class="skip-link">Skip to content</a>
-  <canvas id="cyber-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-80"></canvas>
-  <div class="fixed inset-0 brutal-grid pointer-events-none z-0"></div>
-
-  <header id="navbar" class="navbar-shell fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3.5 group">
-        <div class="w-10 h-10 flex items-center justify-center p-0.5 group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] transition-transform">
-          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" aria-hidden="true">
-            <rect x="22" y="18" width="14" height="64" fill="#FF5D1B"/><rect x="64" y="18" width="14" height="64" fill="#FF5D1B"/><polygon points="36,44 54,36 46,62 64,54 64,62 46,70 54,44 36,52" fill="#FFFFFF"/>
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <!-- FIXED LINE BELOW: Changed span to div and added flex items-center -->
-          <div class="flex items-center gap-1.5 font-display font-black text-xl tracking-tight leading-none">
-            <span class="text-hotwire">HOTWIRE</span>
-            <span class="text-white">INTERACTIVE</span>
-          </div>
-          <span class="font-mono text-[9px] font-bold tracking-widest text-industrial-400 uppercase mt-1">Belgium studio</span>
-        </div>
-      </a>
-      <nav class="hidden lg:flex items-center gap-8 font-mono text-xs font-bold uppercase tracking-wider" aria-label="Primary navigation">
-        <a href="/" class="text-industrial-300 hover:text-hotwire transition-colors">Studio</a><a href="/team/" class="text-hotwire transition-colors" aria-current="page">Team</a><a href="/#contact" class="text-industrial-300 hover:text-hotwire transition-colors">Contact</a>
-      </nav>
-      <a href="/#contact" class="hidden lg:inline-block brutal-btn-primary px-5 py-2 font-mono text-xs tracking-wider uppercase">Contact us</a>
-      <button id="mobile-menu-btn" class="lg:hidden text-white p-2 border-2 border-industrial-600 bg-surface" aria-label="Toggle mobile menu" aria-controls="mobile-menu" aria-expanded="false"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+  <header id="navbar" class="navbar-shell">
+    <div class="page-shell navbar-inner">
+      <a href="/" class="brand" aria-label="Hotwire Interactive home"><img src="/favicon.svg" class="brand-mark" width="40" height="40" alt="" /><div><div class="brand-name"><span class="text-hotwire">HOTWIRE</span><span>INTERACTIVE</span></div><span class="brand-location">Independent studio · Belgium</span></div></a>
+      <nav class="desktop-nav" aria-label="Primary navigation"><a href="/websites/">Websites</a><a href="/#about">Studio</a><a href="/team/" aria-current="page">Team</a><a href="/#contact">Contact</a></nav>
+      <a href="/websites/#website-quiz" class="header-cta brutal-btn-primary">Find your website</a>
+      <button id="mobile-menu-btn" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="mobile-menu" aria-expanded="false" hidden><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
     </div>
-    <div id="mobile-menu" class="hidden lg:hidden mt-4 p-6 bg-surface border-2 border-hotwire mx-2 shadow-brutal-orange"><div class="flex flex-col gap-4 font-mono font-bold text-xs uppercase"><a href="/" class="text-white hover:text-hotwire py-2 border-b border-industrial-700">Studio</a><a href="/team/" class="text-hotwire hover:text-white py-2 border-b border-industrial-700" aria-current="page">Team</a><a href="/#contact" class="text-white hover:text-hotwire py-2 border-b border-industrial-700">Contact</a><a href="/#contact" class="block text-center w-full py-3 bg-hotwire text-pitch font-black">Contact the studio</a></div></div>
+    <nav id="mobile-menu" class="mobile-nav page-shell" aria-label="Mobile navigation"><a href="/websites/">Websites</a><a href="/#about">Studio</a><a href="/team/" aria-current="page">Team</a><a href="/#contact">Contact</a></nav>
   </header>
 
-  <main id="main-content" class="relative z-10">
-    <section aria-labelledby="team-title" class="pt-48 pb-24 px-6 max-w-7xl mx-auto border-b-2 border-industrial-700">
-      <div data-reveal class="reveal max-w-4xl">
-        <p class="font-mono text-xs font-bold uppercase tracking-widest text-hotwire mb-4">The people</p>
-        <h1 id="team-title" class="text-5xl sm:text-7xl md:text-8xl font-display font-black text-white uppercase leading-[0.92] mb-8">MEET THE <span class="text-hotwire">TEAM.</span></h1>
-        <p class="text-lg sm:text-2xl text-industrial-200 leading-relaxed max-w-3xl">Hotwire Interactive is currently in formation. This page will grow with the people shaping the studio, its direction, and its work.</p>
+  <main id="main-content" class="relative z-10" tabindex="-1">
+    <section class="page-intro" aria-labelledby="team-title">
+      <div class="page-shell">
+        <h1 id="team-title" class="page-title mb-8">Meet the people<br />behind Hotwire.</h1>
+        <p class="text-lg sm:text-xl text-industrial-300 leading-relaxed max-w-2xl">Dauphin and Liam run Hotwire Interactive from Belgium. The studio builds websites for clients and works on independent projects of its own.</p>
       </div>
     </section>
 
-    <section aria-labelledby="profiles-title" class="py-24 px-6 max-w-7xl mx-auto">
-      <div data-reveal class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 mb-10 border-b-2 border-industrial-700">
-        <div>
-          <p class="font-mono text-xs font-bold uppercase tracking-widest text-hotwire mb-3">Team profiles</p>
-          <h2 id="profiles-title" class="text-4xl sm:text-6xl font-display font-black text-white uppercase">PEOPLE <span class="text-hotwire">OF THE TEAM.</span></h2>
-        </div>
+    <section class="page-shell section-pad" aria-labelledby="profiles-title">
+      <div class="flex flex-wrap items-end justify-between gap-6 mb-10">
+        <h2 id="profiles-title" class="section-title">The team</h2>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
-        <a href="/team/dauphindm/" class="group">
-          <article data-reveal data-reveal-delay="0" class="reveal bg-surface border-2 border-industrial-600 p-8 min-h-64 flex flex-col justify-between group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] transition-transform">
-            <div><p class="font-mono text-xs text-hotwire uppercase mb-5">CEO / Owner</p><h3 class="font-display font-black text-2xl text-white uppercase">Dauphin de Moulin</h3></div>
-            <p class="font-mono text-sm text-industrial-400">Owner and founder of Hotwire Interactive.</p>
-          </article>
+      <div class="team-grid">
+        <a href="/team/dauphindm/" class="team-card" aria-labelledby="dauphin-name dauphin-link">
+          <p class="eyebrow">CEO / Owner</p><h3 id="dauphin-name">Dauphin de Moulin</h3>
+          <p>Owner and founder of Hotwire Interactive, shaping the studio’s vision and strategy.</p>
+          <span id="dauphin-link" class="card-link">View profile <span aria-hidden="true">↗</span></span>
         </a>
-
-        <a href="/team/liamvl/" class="group">
-          <article data-reveal data-reveal-delay="0" class="reveal bg-surface border-2 border-industrial-600 p-8 min-h-64 flex flex-col justify-between group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] transition-transform">
-            <div><p class="font-mono text-xs text-amber uppercase mb-5">Co-Owner</p><h3 class="font-display font-black text-2xl text-white uppercase">Liam van Looveren</h3></div>
-            <p class="font-mono text-sm text-industrial-400">Co-owner and key contributor to the success of Hotwire Interactive.</p>
-          </article>
+        <a href="/team/liamvl/" class="team-card" aria-labelledby="liam-name liam-link">
+          <p class="eyebrow">Co-owner</p><h3 id="liam-name">Liam van Looveren</h3>
+          <p>Co-owner of Hotwire Interactive, with a lifelong interest in games and how they’re made.</p>
+          <span id="liam-link" class="card-link">View profile <span aria-hidden="true">↗</span></span>
         </a>
-
-        <article data-reveal data-reveal-delay="3" class="reveal bg-surface border-2 border-industrial-600 p-8 min-h-64 flex flex-col justify-between">
-          <div><p class="font-mono text-xs text-white uppercase mb-5">Community Member</p><h3 class="font-display font-black text-2xl text-white uppercase">You</h3></div>
-          <p class="font-mono text-sm text-industrial-400">You too are important to Hotwire Interactive. Without our community, we wouldn't be able to achieve our goals.</p>
+        <article class="team-card community-card">
+          <h3>Want to work with us?</h3>
+          <p>Ask about a website, suggest a collaboration, or get in touch about the studio’s projects.</p>
+          <a href="/#contact" class="card-link">Contact the studio</a>
         </article>
       </div>
     </section>
   </main>
 
-  <footer class="relative z-10 border-t-2 border-industrial-700 bg-pitch py-12 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-      <div class="flex items-center gap-3.5">
-        <div class="w-10 h-10 flex items-center justify-center p-0.5"><svg viewBox="0 0 100 100" class="w-full h-full" fill="none" aria-hidden="true"><rect x="22" y="18" width="14" height="64" fill="#FF5D1B"/><rect x="64" y="18" width="14" height="64" fill="#FF5D1B"/><polygon points="36,44 54,36 46,62 64,54 64,62 46,70 54,44 36,52" fill="#FFFFFF"/></svg></div>
-        <div><div class="font-display font-black text-white text-base tracking-tight"><span class="text-hotwire">HOTWIRE</span> INTERACTIVE</div><div class="font-mono text-[10px] text-industrial-400 uppercase font-bold">BELGIUM • <a href="https://studio.hotwireinteractive.co.uk" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">studio.hotwireinteractive.co.uk</a></div></div>
+  <footer class="site-footer">
+    <div class="page-shell">
+      <div class="footer-main">
+        <a href="/" class="brand" aria-label="Hotwire Interactive home"><img src="/favicon.svg" class="brand-mark" width="40" height="40" alt="" /><div><div class="brand-name"><span class="text-hotwire">HOTWIRE</span><span>INTERACTIVE</span></div><span class="brand-location">Independent studio · Belgium</span></div></a>
+        <nav class="footer-nav" aria-label="Footer navigation"><a href="/websites/">Websites</a><a href="/websites/#website-quiz">Website quiz</a><a href="/team/" aria-current="page">Team</a><a href="mailto:contact@hotwireinteractive.co.uk">Email us</a><a href="/#contact">Contact</a></nav>
       </div>
-      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 font-mono text-xs font-bold text-industrial-300"><a href="mailto:contact@hotwireinteractive.co.uk" class="hover:text-hotwire transition-colors">Email studio</a><a href="/" class="hover:text-hotwire transition-colors">Studio</a><a href="/team/" class="hover:text-hotwire transition-colors">Team</a><a href="/#contact" class="hover:text-hotwire transition-colors">Contact</a></div>
-      <div class="font-mono text-xs text-industrial-500">© 2026 HOTWIRE INTERACTIVE. ALL RIGHTS RESERVED.</div>
+      <nav class="footer-legal" aria-label="Legal navigation"><a href="/privacy/">Privacy</a><a href="/terms/">Terms of Use</a><a href="/cookies/">Cookies &amp; Storage</a></nav>
+      <div class="footer-bottom"><p>© <span data-year>2026</span> Hotwire Interactive. All rights reserved.</p><p>Websites &amp; independent projects. Belgium.</p></div>
     </div>
   </footer>
   <script type="module" src="/src/js/team.js"></script>

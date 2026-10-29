@@ -1,4 +1,6 @@
-# Implementation Plan: Hotwire Interactive Coming-Soon Website
+# Original Implementation Plan: Hotwire Interactive Coming-Soon Website
+
+> Historical design brief. For the current multi-page structure, canonical domain, verification commands, and deployment process, see [README.md](README.md) and [DEPLOY.md](DEPLOY.md).
 
 This document outlines the architecture, visual design system, file structure, component specifications, and execution phases for the official company website of **Hotwire Interactive** (`studio.hotwireinteractive.co.uk`), an independent studio based in Belgium.
 
