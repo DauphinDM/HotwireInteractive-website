@@ -195,7 +195,7 @@ textarea.form-control { resize: vertical; min-height: 9rem; }
 .team-grid { display: grid; gap: 1.5rem; }
 .team-card { display: flex; flex-direction: column; height: 100%; min-width: 0; padding: 2rem 0; border-top: 1px solid var(--line); transition: border-color 0.2s; }
 a.team-card:hover, a.team-card:focus-visible { border-color: var(--accent); }
-.team-card h3 { font: 600 clamp(2rem, 3vw, 3rem)/1.1 var(--font-heading); margin-block: 0.75rem 1rem; }
+.team-card h3 { font: 600 clamp(2rem, 3vw, 3rem)/1.1 var(--font-heading); margin-block: 0.75rem 1rem; hyphens: auto; overflow-wrap: anywhere; }
 .team-card p:not(.eyebrow) { font-size: 0.875rem; color: #b0b0b0; line-height: 1.8; }
 .team-card .card-link { display: flex; justify-content: space-between; gap: 1rem; padding-top: 2rem; margin-top: auto; font: 500 0.875rem/1.6 var(--font-body); color: #ff905f; }
 .community-card { max-width: 45rem; }

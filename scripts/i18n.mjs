@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process';
 import { collectHtmlMessages, enhanceShell } from './i18n-html.mjs';
 import { LANGUAGE_CODES } from '../src/i18n/config.js';
 import { isTranslatable } from '../src/i18n/protected.js';
+import { translationIssues } from '../src/i18n/quality.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 export const pageFiles = ['index.html', 'websites/index.html', 'websites/pricing/index.html', 'websites/examples/index.html', 'websites/agreement/index.html',
@@ -62,12 +63,21 @@ export async function syncCatalogs() {
 
 export async function checkCatalogs() {
   const keys = await sourceMessages();
+  const editorial = JSON.parse(await readFile(resolve(root, 'src/i18n/editorial.json'), 'utf8'));
   for (const locale of LANGUAGE_CODES) {
     const catalog = JSON.parse(await readFile(catalogueFile(locale), 'utf8'));
     const invalid = keys.filter((key) => !isValidTranslation(key, catalog[key]));
     if (invalid.length) throw new Error(`${locale}: ${invalid.length} missing/invalid translations. Run npm run i18n:sync, then fill or explicitly translate the catalogue. First: ${invalid.slice(0, 3).join('; ')}`);
+    if (locale === 'en') continue;
+    const localeIndex = ['nl', 'fr', 'de'].indexOf(locale);
+    const issues = keys.flatMap((key) => {
+      const problems = translationIssues(key, catalog[key], locale);
+      if (editorial[key] && catalog[key] !== editorial[key][localeIndex]) problems.push('curated translation changed; update editorial.json deliberately');
+      return problems.map((problem) => `${key}: ${problem}`);
+    });
+    if (issues.length) throw new Error(`${locale}: ${issues.length} translation-quality issues. ${issues.slice(0, 5).join('; ')}`);
   }
-  console.log(`All ${LANGUAGE_CODES.length} catalogues cover ${keys.length} messages and preserve placeholders.`);
+  console.log(`All ${LANGUAGE_CODES.length} catalogues cover ${keys.length} messages and preserve placeholders, numeric values, protected names, register, and curated wording.`);
 }
 
 async function seedTranslations() {
@@ -77,9 +87,7 @@ async function seedTranslations() {
     child.on('error', reject);
     child.on('exit', (code) => code === 0 ? done() : reject(new Error(`Offline translator exited ${code}. See ai_here/languages.md for isolated-environment setup.`)));
   });
-  // Keep stable catalogue ordering after Python has filled missing entries.
-  await syncCatalogs();
-  await checkCatalogs();
+  console.log('Offline draft candidates only. Review their meaning and wording, then apply explicitly and run i18n:check. Public catalogue values were not filled automatically.');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -87,5 +95,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (action === 'sync') await syncCatalogs();
   else if (action === 'check') await checkCatalogs();
   else if (action === 'translate') await seedTranslations();
-  else throw new Error('Use sync, check, or translate --model-dir PATH [--download-models].');
+  else throw new Error('Use sync, check, or translate --model-dir PATH --output CANDIDATES.json [--download-models].');
 }

@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { LANGUAGE_CODES, LANGUAGES, chooseLanguage, supportedLanguage, splitLocalePath, localePath, localeHref } from '../src/i18n/config.js';
+import { LANGUAGE_CODES, LANGUAGES, chooseLanguage, supportedLanguage, splitLocalePath, localePath, localeHref, formatCopyPrices } from '../src/i18n/config.js';
 import { t } from '../src/i18n/index.js';
 import { recommendWebsite } from '../src/js/website-recommendation.js';
 import { collectHtmlMessages, enhanceShell, localizeHtml } from '../scripts/i18n-html.mjs';
 import { parseHTML } from 'linkedom';
 import { isValidTranslation } from '../scripts/i18n.mjs';
+import { numberTokens, translationIssues } from '../src/i18n/quality.js';
+import { prepareCatalogues, digest, batches } from '../scripts/review-translations.mjs';
 
 const base = { goal: 'leads', size: 'focused', updates: 'occasional', priority: 'lean', commerce: 'no', bookings: 'no', accounts: 'no', content: 'ready', timeline: 'normal', budget: 'unsure' };
 
@@ -49,6 +51,55 @@ test('catalogue validation rejects unknown tokens, broken placeholders, and empt
   for (const value of ['Hallo ▁{name}', 'Hallo �{name}', 'Hallo ⁇{name}', 'Hallo <unk>{name}', 'Hallo <UNK>{name}', 'Hallo {other}', '', '   ', null]) {
     assert.equal(isValidTranslation('Hello {name}', value), false, String(value));
   }
+});
+
+test('fidelity checks preserve prices, percentages, names, and deliberate language register', () => {
+  assert.deepEqual(numberTokens('€1,200, €4.99, 50%, 21%'), numberTokens('1.200 €, 4,99 €, 50%, 21%'));
+  assert.deepEqual(translationIssues('Starter · From €500', 'Starter · Vanaf €500', 'nl'), []);
+  assert.ok(translationIssues('Starter · From €500', 'Voorgerecht · Vanaf €50', 'nl').some((issue) => issue.includes('numeric')));
+  assert.ok(translationIssues('Choose Still', 'Kies Stil', 'nl').some((issue) => issue.includes('protected')));
+  assert.ok(translationIssues('Your website', 'Uw website', 'nl').some((issue) => issue.includes('register')));
+  assert.ok(translationIssues('Your website', 'Deine Website', 'de').some((issue) => issue.includes('register')));
+  assert.ok(translationIssues('Your website', 'Ton site', 'fr').some((issue) => issue.includes('register')));
+  assert.ok(translationIssues('Tell us about it', 'Tell us about it', 'fr').includes('unreviewed English fallback'));
+  assert.deepEqual(translationIssues('Contact', 'Contact', 'fr'), []);
+  assert.deepEqual(translationIssues('Requests', 'Requêtes', 'fr'), []);
+  assert.ok(formatCopyPrices('50% · €1,200', 'fr').includes('50\u00a0%'));
+  assert.ok(formatCopyPrices('50% · €1,200', 'de').includes('50\u00a0%'));
+  assert.equal(formatCopyPrices('Wird gesendet…', 'de'), 'Wird gesendet\u00a0…');
+  assert.equal(formatCopyPrices('Choisissez ‘Envoyer la demande’.', 'fr'), 'Choisissez «\u00a0Envoyer la demande\u00a0».');
+});
+
+test('every shipped translation passes fidelity rules and keeps curated corrections', async () => {
+  const editorial = JSON.parse(await readFile(new URL('../src/i18n/editorial.json', import.meta.url)));
+  for (const [index, locale] of ['nl', 'fr', 'de'].entries()) {
+    const catalog = JSON.parse(await readFile(new URL(`../src/i18n/messages/${locale}.json`, import.meta.url)));
+    for (const [key, value] of Object.entries(catalog)) {
+      assert.deepEqual(translationIssues(key, value, locale), [], `${locale}: ${key}`);
+      assert.deepEqual(numberTokens(formatCopyPrices(value, locale)), numberTokens(key), `${locale}: rendered numeric values in ${key}`);
+      if (editorial[key]) assert.equal(value, editorial[key][index], `${locale}: curated ${key}`);
+    }
+  }
+});
+
+test('review candidates need matching source, complete locales, and preserved placeholders', () => {
+  const source = { 'Hello {name}': 'Hello {name}' };
+  const candidates = { sourceDigest: digest(JSON.stringify(source)), locales: {
+    nl: { 'Hello {name}': 'Hallo {name}' }, fr: { 'Hello {name}': 'Bonjour {name}' }, de: { 'Hello {name}': 'Hallo {name}' },
+  } };
+  assert.equal(prepareCatalogues(source, candidates, {})['fr']['Hello {name}'], 'Bonjour {name}');
+  assert.throws(() => prepareCatalogues(source, { ...candidates, sourceDigest: 'stale' }, {}), /digest/);
+  assert.throws(() => prepareCatalogues(source, { ...candidates, locales: {} }, {}), /invalid/);
+  assert.throws(() => prepareCatalogues(source, { ...candidates, locales: { ...candidates.locales, nl: { 'Hello {name}': 'Hallo' } } }, {}), /invalid/);
+  assert.equal(batches([{ text: 'first' }, { text: 'second' }], 6).length, 2);
+  const question = { 'Can you help?': 'Can you help?' };
+  assert.equal(prepareCatalogues(question, { sourceDigest: digest(JSON.stringify(question)), locales: {
+    nl: { 'Can you help?': 'Kunt u helpen?' }, fr: { 'Can you help?': 'Pouvez-vous aider ?' }, de: { 'Can you help?': 'Können Sie helfen?' },
+  } }, {})['nl']['Can you help?'], 'Kun je helpen?');
+  const possessive = { 'The site has your text.': 'The site has your text.' };
+  assert.equal(prepareCatalogues(possessive, { sourceDigest: digest(JSON.stringify(possessive)), locales: {
+    nl: { 'The site has your text.': 'De website heeft uw tekst.' }, fr: { 'The site has your text.': 'Le site contient vos textes.' }, de: { 'The site has your text.': 'Die Website enthält Ihre Texte.' },
+  } }, {})['nl']['The site has your text.'], 'De website heeft je tekst.');
 });
 
 test('HTML localization is static, escaped, and never touches scripts or field values', () => {

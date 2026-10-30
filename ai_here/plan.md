@@ -1,6 +1,6 @@
 # Handover — actual D: checkout
 
-Updated 30 October 2026. Working tree: `D:\_HotwireInteractiveWEBSITE`. Live email is configured according to the owner. Do not redo mail setup or send test inquiries without permission.
+Updated 31 October 2026. Working tree: `D:\_HotwireInteractiveWEBSITE`. Live email is configured according to the owner. Do not redo mail setup or send test inquiries without permission.
 
 Owner clarification: the company is **not registered yet**; legal details will take time. Keep final commercial issuance/payment collection deferred and the public agreement as a review draft. Do not fabricate registration/VAT details. Separately confirm the actual operator/controller identity appropriate to a public inquiry website.
 
@@ -63,7 +63,16 @@ No commit, push, production deployment, real signature verification, or real pay
 - Reviewed Dutch/French/German phone and desktop screenshots. The final cleanup translates static textarea placeholders without touching private contents, improves fragmented homepage headings, and keeps mobile shortcuts in a two-column row so the longer Dutch labels do not cover the introduction. Browser assertions now check the introduction is below the header and the message placeholder actually changes language.
 - PHP sender/recipient/transport settings remain unchanged. Only a supported locale code is added to validation, receipt hashing, the internal email preference line, and native-form presentation. Existing clients default to English.
 
-Initial translations still need fluent-language review, especially legal/commercial paragraphs. Registration, VAT details, approved final service terms, payments, and signatures remain deferred/manual exactly as before.
+The rough initial translations were subsequently corrected in the quality follow-up below. Professional/native-speaker and legal signoff remain separate. Registration, VAT details, approved final service terms, payments, and signatures remain deferred/manual exactly as before.
+
+## Translation-quality follow-up — 31 October 2026
+
+- Owner correctly reported rough copy despite passing structural tests. The root cause included sentence splitting around names, prices, and percentages plus literal mistranslations. Do not equate coverage/browser-test success with linguistic quality.
+- Whole-message Google Translate candidates plus a main-assistant LLM editorial/meaning pass replaced the weak output across Dutch/French/German. All 958 source messages were revisited; 563 now have curated three-language wording. Values changed: nl 690, fr 701, de 680. This did not use or claim a separate Dutch-specific LLM or native-speaker signoff.
+- LanguageTool independently checks public translated copy in each language, with local per-message caching for corrections/resumption. It receives checked-in public text only, never visitor fields. A connection timeout interrupted the first French run; the final status belongs in `translation-review.md`, not an unverified blanket claim of zero errors.
+- `src/i18n/quality.js` and build checks now protect numeric values, identities, technical attributes, forms of address, intentional unchanged labels, and curated wording. Actual deposit receipt, draft-only warnings, postal details, and proposed payment stages were preserved; no legal or mail-transport behaviour changed.
+- The optional offline generator no longer stitches fragments or directly fills publishable translations. Both local and remote generation now require separate candidate review and explicit application. Read `languages.md` for the updated commands; old commands without `--output` are intentionally refused.
+- Final verification: build/fidelity checks, **25 Node tests**, **1 standard-library Python tooling test**, PHP checks, and the full **303-test browser suite (2.4 minutes)** passed. LanguageTool checked **958/958 current rendered messages per language**; final cached texts/digests match the catalogues. Residual suggestions were reviewed, not blindly applied or described as zero errors; details and counts are in `translation-review.md`. Long German team headings wrap at 320px, and assembled headings are tested in all three languages. Final phone/desktop screenshots were reviewed and `git diff --check` passed. No real mail, commit, push, or deployment was performed.
 
 ## Next improvements
 

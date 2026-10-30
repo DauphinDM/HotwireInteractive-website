@@ -1,8 +1,10 @@
-"""Offline, missing-entry-only translation using Argos/OpenNMT model packages.
+"""Optional offline DRAFT generation using Argos/OpenNMT model packages.
 
 Install the pinned CPU dependencies in an isolated environment, then pass its
 Python executable to scripts/i18n.mjs through HOTWIRE_I18N_PYTHON. Only model
 downloads use the network; source/translated copy is processed on this machine.
+Whole messages are translated together, never fragments around names/numbers.
+Only an explicitly selected candidate file is written, not public catalogues.
 """
 import argparse
 import gc
@@ -24,14 +26,6 @@ MODELS = {
     "fr": "3a65ed83364f4e7b06e30f9dd823db1934899ed3ce839e63f46dc7b09dc797b4",
     "de": "0e3446449aef7bcac9db685b86697bfcc27ecb3afd834583e8042f6125a42f53",
 }
-PROTECTED = re.compile(
-    r"(\{\w+\}|\||https?://\S+|[\w.+-]+@[\w.-]+\.[A-Za-z]+|"
-    r"Hotwire Interactive|Hotwire|Dauphin de Moulin|Liam van Looveren|"
-    r"Max Hermanelei 55|Brasschaat 2930|Webhero|JouwWeb|Webflux|"
-    r"Fieldwork|Forma|Objects|Still|Starter|Growth|Scale|Enterprise|"
-    r"Google Fonts|Manrope|Space Grotesk|GDPR|CMS|API|PHP|EUR|"
-    r"€?\d[\d.,]*\+?%?)"
-)
 
 
 def download_model(locale, cache):
@@ -65,53 +59,33 @@ def translate_locale(locale, model_root):
     missing = [key for key, value in catalog.items() if not value]
     if not missing:
         print(f"{locale}: no missing translations; existing editorial changes preserved.", flush=True)
-        return
+        return catalog
     model = next(model_root.rglob("model.bin")).parent
     tokenizers = list(model_root.rglob("sentencepiece.model")) + list(model_root.rglob("spm.model"))
     if not tokenizers:
         raise RuntimeError(f"No sentencepiece tokenizer found in {model_root}")
     tokenizer = spm.SentencePieceProcessor(model_file=str(tokenizers[0]))
     translator = ctranslate2.Translator(str(model), device="cpu", compute_type="int8", inter_threads=1, intra_threads=min(4, os.cpu_count() or 1))
-    pieces_by_key = {key: PROTECTED.split(key) for key in missing}
-    fragments = set()
-    for parts in pieces_by_key.values():
-        for index in range(0, len(parts), 2):
-            text = parts[index].strip()
-            if re.search(r"[A-Za-z]", text):
-                fragments.add(text)
-    fragments = sorted(fragments)
-    translated = {}
-    for offset in range(0, len(fragments), 32):
-        batch = fragments[offset:offset + 32]
+    for offset in range(0, len(missing), 16):
+        batch = missing[offset:offset + 16]
         results = translator.translate_batch(
             [tokenizer.encode(text, out_type=str) for text in batch],
-            beam_size=2, max_decoding_length=512, max_batch_size=1024, batch_type="tokens",
+            beam_size=4, max_decoding_length=512, max_batch_size=1024, batch_type="tokens",
         )
         for source, result in zip(batch, results):
             # Argos packages can expose target-side SentencePiece space markers
             # after decoding with the shared tokenizer (also handled upstream).
             decoded = tokenizer.decode(result.hypotheses[0]).replace("▁", " ").replace("_", " ")
-            translated[source] = re.sub(r"\s+", " ", decoded).strip() or source
+            value = re.sub(r"\s+", " ", decoded).strip()
+            if sorted(re.findall(r"\{\w+\}", value)) != sorted(re.findall(r"\{\w+\}", source)) or re.search(r"[▁�⁇]|<unk>", value, re.IGNORECASE):
+                print(f"{locale}: manual translation needed; placeholder/tokenizer failure: {source}", flush=True)
+                continue
+            catalog[source] = value
         if offset % 256 == 0:
-            print(f"{locale}: translated {min(offset + 32, len(fragments))}/{len(fragments)} unique fragments locally.", flush=True)
-    for key, parts in pieces_by_key.items():
-        for index in range(0, len(parts), 2):
-            raw = parts[index]
-            stripped = raw.strip()
-            if stripped in translated:
-                left = raw[:len(raw) - len(raw.lstrip())]
-                right = raw[len(raw.rstrip()):]
-                parts[index] = left + translated[stripped] + right
-        value = "".join(parts)
-        if sorted(re.findall(r"\{\w+\}", value)) != sorted(re.findall(r"\{\w+\}", key)):
-            raise RuntimeError(f"Placeholder changed: {key}")
-        if re.search(r"[▁�⁇]|<unk>", value, re.IGNORECASE):
-            raise RuntimeError(f"Tokenizer artifact; translate this entry manually: {key}")
-        catalog[key] = value
-    file.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"{locale}: saved {len(missing)} new draft translations; review before publication.", flush=True)
+            print(f"{locale}: translated {min(offset + 16, len(missing))}/{len(missing)} whole messages locally.", flush=True)
     del translator
     gc.collect()
+    return catalog
 
 
 if __name__ == "__main__":
@@ -119,9 +93,17 @@ if __name__ == "__main__":
     parser.add_argument("--model-dir", default=os.environ.get("HOTWIRE_I18N_MODELS"))
     parser.add_argument("--download-models", action="store_true", help="Opt in to downloading public Argos models; no copy is uploaded")
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--output", help="Private review-candidate JSON file; public catalogues are never overwritten")
     args = parser.parse_args()
     if not args.model_dir:
         parser.error("Pass --model-dir or set HOTWIRE_I18N_MODELS. See ai_here/languages.md.")
+    if not args.prepare_only and not args.output:
+        parser.error("Pass --output PATH for draft candidates. Generation no longer edits publishable catalogues.")
+    output = Path(args.output).resolve() if args.output else None
+    if output and any(output.is_relative_to(ROOT / directory) for directory in ["public", "dist", "src"]):
+        parser.error("Keep review candidates outside public, dist, and src.")
+    source = json.loads((ROOT / "src/i18n/messages/en.json").read_text(encoding="utf-8"))
+    result = {"provider": "Argos/OpenNMT offline whole-message drafts; review required", "sourceDigest": hashlib.sha256(json.dumps(source, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest(), "locales": {}}
     cache = Path(args.model_dir).resolve()
     cache.mkdir(parents=True, exist_ok=True)
     for locale in MODELS:
@@ -132,4 +114,7 @@ if __name__ == "__main__":
             if not list(directory.rglob("model.bin")):
                 parser.error(f"Missing {locale} model. Use --download-models once to opt in to its download.")
         if not args.prepare_only:
-            translate_locale(locale, directory)
+            result["locales"][locale] = translate_locale(locale, directory)
+    if output:
+        output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"Review candidates saved to {output}. Public catalogues unchanged; review and apply explicitly.", flush=True)

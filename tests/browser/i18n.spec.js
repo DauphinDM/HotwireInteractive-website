@@ -20,7 +20,7 @@ test('packages and examples are first-level navigation and visible phone shortcu
 });
 
 for (const locale of ['nl', 'fr', 'de']) {
-  for (const path of ['/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', '/privacy/', '/terms/', '/cookies/', '/team/', '/websites/examples/local/', '/websites/examples/shop/', '/websites/examples/booking/']) {
+  for (const path of ['/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', '/privacy/', '/terms/', '/cookies/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/websites/examples/local/', '/websites/examples/portfolio/', '/websites/examples/shop/', '/websites/examples/booking/']) {
     test(`${locale}${path} has static translations, localized links, and accessible phone/desktop layouts`, async ({ page }) => {
       test.setTimeout(45_000);
       for (const width of [320, 1440]) {

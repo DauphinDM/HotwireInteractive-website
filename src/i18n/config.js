@@ -24,14 +24,18 @@ export function localePath(pathname, locale = 'en') {
   return locale === 'en' ? path : `/${locale}${path}`;
 }
 
-// Source copy uses English EUR notation; display money in the chosen locale.
+// Source copy uses English EUR notation; use local currency/spacing conventions.
 export function formatCopyPrices(text, locale = 'en') {
-  return text.replace(/€(\d[\d,]*(?:\.\d{2})?)/g, (_, digits) => {
+  const formatted = text.replace(/€(\d[\d,]*(?:\.\d{2})?)/g, (_, digits) => {
     const amount = Number(digits.replaceAll(',', ''));
     return new Intl.NumberFormat(LANGUAGES[locale].intl, { style: 'currency', currency: 'EUR',
       minimumFractionDigits: digits.includes('.') ? 2 : 0, maximumFractionDigits: digits.includes('.') ? 2 : 0,
     }).format(amount);
   });
+  const spaced = ['fr', 'de'].includes(locale) ? formatted.replace(/(?<=\d)\s*%/g, '\u00a0%') : formatted;
+  if (locale === 'de') return spaced.replace(/([\p{L}\d])…/gu, '$1\u00a0…');
+  if (locale === 'fr') return spaced.replace(/‘([^’]+)’/g, '«\u00a0$1\u00a0»');
+  return spaced;
 }
 
 export function localeHref(href, locale = 'en') {

@@ -94,15 +94,20 @@ After editing English copy:
 
 ```sh
 npm run i18n:sync
-# Fill new entries, or use the optional offline draft translator:
-node scripts/i18n.mjs translate --model-dir PATH_TO_MODELS --download-models
+# Opt-in public-copy draft generation; keep files outside src/public/dist:
+node scripts/review-translations.mjs translate CANDIDATES.json --allow-public-copy
+# Review meaning, page context, and editorial.json before applying:
+node scripts/review-translations.mjs apply CANDIDATES.json --reviewed
+node scripts/review-translations.mjs grammar REPORT.json --allow-public-copy
 npm run i18n:check
 npm run build
 ```
 
-The optional translator uses an isolated Python environment with `scripts/requirements-i18n.txt`, selected through `HOTWIRE_I18N_PYTHON`. It downloads pinned, hash-verified public models only with explicit opt-in; subsequent generation can run fully offline. Ordinary builds and hosting need no models, Python, API keys, paid translation service, or translation requests. Existing editorial changes are preserved. Setup and adding languages: `ai_here/languages.md`. Core curated translations are in `src/i18n/editorial.json`, applied with `node scripts/apply-editorial.mjs`.
+The revised copy uses whole-message Google Translate drafts, LLM editorial/meaning review in all three languages, and LanguageTool checks—not the old sentence-fragment stitching. Dutch uses je/jouw; French vous/votre; German Sie/Ihr. `src/i18n/editorial.json` holds 563 curated messages. Build checks protect prices, percentages, names, placeholders, register, and curated wording. Grammar reports are cached for targeted rechecks; no suggestions are applied automatically. The public endpoints are opt-in maintenance aids, not guaranteed services or visitor-time dependencies.
 
-Translations are machine-assisted drafts with curated key navigation/actions/warnings, **not certified legal translations**. Obtain appropriate review of commercial/legal copy. Agreements remain review drafts and registration details remain pending.
+An optional offline fallback still uses the isolated Python environment in `scripts/requirements-i18n.txt`, selected by `HOTWIRE_I18N_PYTHON`: `node scripts/i18n.mjs translate --model-dir PATH_TO_MODELS --output CANDIDATES.json --download-models`. It now translates whole messages and writes only private draft candidates, never publishable catalogue values. Ordinary builds/hosting need no models, Python, API keys, paid service, or translation requests. Setup, review steps, and adding languages: `ai_here/languages.md`; quality evidence: `ai_here/translation-review.md`.
+
+Software checks and LLM review are **not certified legal translations** or native-speaker signoff. Obtain appropriate review of commercial/legal copy. Agreements remain review drafts and registration details remain pending.
 
 ## Social artwork
 
