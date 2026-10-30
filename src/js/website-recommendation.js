@@ -1,3 +1,5 @@
+import { estimateWebsite } from './pricing.js';
+
 export const WEBSITE_QUESTIONS = [
   {
     id: 'goal', label: 'Main goal', title: 'What should the website mainly do?',
@@ -12,12 +14,13 @@ export const WEBSITE_QUESTIONS = [
     ],
   },
   {
-    id: 'size', label: 'Content', title: 'How much do you need to put online?',
+    id: 'size', label: 'Page count', title: 'How much do you need to put online?',
     help: 'Think about the content you have now, not everything you might add one day.',
     options: [
-      { value: 'focused', label: 'One clear offer', detail: 'A focused introduction, a small launch, or a single service.' },
-      { value: 'several', label: 'A handful of pages', detail: 'A few services, projects, products, or useful sections.' },
-      { value: 'growing', label: 'Lots to browse', detail: 'A growing catalogue, project library, or collection of content.' },
+      { value: 'focused', label: 'One clear offer', detail: '1–3 pages, with your text and imagery supplied.' },
+      { value: 'several', label: 'A handful of pages', detail: '4–8 pages for services, projects, or useful sections.' },
+      { value: 'growing', label: 'Lots to browse', detail: '9–15 pages or a growing content collection.' },
+      { value: 'expansive', label: 'A large site or portal', detail: '16+ pages or custom application screens.' },
     ],
   },
   {
@@ -31,11 +34,67 @@ export const WEBSITE_QUESTIONS = [
   },
   {
     id: 'priority', label: 'Launch priority', title: 'What matters most for the first version?',
-    help: 'There’s no wrong answer. This sets the starting scope, not a price or delivery date.',
+    help: 'This guides the design discussion. The estimate still keeps essential features in scope.',
     options: [
       { value: 'lean', label: 'Keep it small and useful', detail: 'Get the essentials working, then add more when needed.' },
       { value: 'presentation', label: 'Give the work room to shine', detail: 'Spend time on the content, imagery, and presentation.' },
       { value: 'growth', label: 'Plan for a bigger site', detail: 'Make space for more content, features, or integrations.' },
+    ],
+  },
+  {
+    id: 'commerce', label: 'Online sales', title: 'Do you also need online sales?',
+    help: 'Your main goal still counts, even if you choose no additional shop here.',
+    options: [
+      { value: 'no', label: 'No additional shop', detail: 'No extra product checkout beyond my main goal.' },
+      { value: 'small', label: 'A simple shop', detail: 'Up to 20 supplied products and a standard hosted checkout.' },
+      { value: 'full', label: 'Complex commerce', detail: 'Larger catalogue, stock connections, or custom order rules.' },
+    ],
+  },
+  {
+    id: 'bookings', label: 'Appointments', title: 'Do you also need online bookings?',
+    help: 'Booking as your main goal is always included in the estimate.',
+    options: [
+      { value: 'no', label: 'No additional booking flow', detail: 'Inquiries are enough beyond my main goal.' },
+      { value: 'basic', label: 'Simple appointments', detail: 'One calendar, standard time slots, and confirmations.' },
+      { value: 'advanced', label: 'Multiple staff or booking rules', detail: 'Several calendars, resources, or custom availability.' },
+    ],
+  },
+  {
+    id: 'accounts', label: 'Visitor accounts', title: 'Will visitors need their own accounts?',
+    help: 'This means customer or member access, not your own content-editing login.',
+    options: [
+      { value: 'no', label: 'No visitor sign-in', detail: 'Public pages or guest checkout only.' },
+      { value: 'basic', label: 'Member accounts', detail: 'Sign-in, profiles, permissions, and recovery.' },
+      { value: 'portal', label: 'A client portal or tool', detail: 'Private documents, dashboards, or a custom workflow.' },
+    ],
+  },
+  {
+    id: 'content', label: 'Content readiness', title: 'Are your text and images ready?',
+    help: 'These allowances cover preparation, not a photography session or full brand identity.',
+    options: [
+      { value: 'ready', label: 'Ready to supply', detail: 'Final text, logo, and licensed images are available.' },
+      { value: 'partial', label: 'Some help needed', detail: 'Allow €250–€500 for editing and content preparation.' },
+      { value: 'needed', label: 'Help from the beginning', detail: 'Allow €750–€1,500 for writing and content preparation.' },
+    ],
+  },
+  {
+    id: 'timeline', label: 'Launch window', title: 'When would you like to launch?',
+    help: 'A target, not a delivery promise. Timing is agreed after scope and availability checks.',
+    options: [
+      { value: 'normal', label: 'One to two months', detail: 'Plan around an agreed schedule after kickoff.' },
+      { value: 'flexible', label: 'Flexible', detail: 'No fixed launch date yet.' },
+      { value: 'asap', label: 'Under four weeks', detail: 'Adds a 20% planning allowance, subject to availability.' },
+    ],
+  },
+  {
+    id: 'budget', label: 'Budget indication', title: 'What build budget do you have in mind?',
+    help: 'Your budget will not inflate the estimate or hide required features. Recurring costs are separate.',
+    options: [
+      { value: 'starter', label: '€500–€1,200', detail: 'A focused, template-based start.' },
+      { value: 'growth', label: '€1,200–€3,000', detail: 'A multi-page site or CMS.' },
+      { value: 'scale', label: '€3,000–€6,500', detail: 'A standard shop, booking flow, or larger site.' },
+      { value: 'enterprise', label: '€6,500+', detail: 'Accounts, integrations, or custom workflows.' },
+      { value: 'unsure', label: 'Help me decide', detail: 'Show the scope-led estimate first.' },
     ],
   },
 ];
@@ -107,7 +166,7 @@ export function recommendWebsite(answers) {
   const structure = [...base.structure];
   const reasons = [base.reason];
 
-  if (answers.size === 'growing') {
+  if (answers.size === 'growing' || answers.size === 'expansive') {
     structure.push(type === 'webapp'
       ? 'Navigation and search for a growing set of records or tools'
       : 'Categories, clear navigation, and search or filters where useful');
@@ -118,12 +177,28 @@ export function recommendWebsite(answers) {
     reasons.push('A handful of pages or sections gives each part of your offer enough room without a sprawling launch.');
   }
 
+  const additions = [];
+  if (type !== 'ecommerce' && answers.commerce !== 'no') {
+    structure.push('A product catalogue, secure checkout, and order management');
+    additions.push('online selling');
+  }
+  if (type !== 'booking' && answers.bookings !== 'no') {
+    structure.push('Availability, appointment confirmations, and cancellation handling');
+    additions.push('appointment bookings');
+  }
+  if (type !== 'webapp' && answers.accounts !== 'no') {
+    structure.push('Visitor sign-in, access controls, and account recovery');
+    additions.push('private visitor accounts');
+  }
+  const summary = [base.summary, additions.length ? `Alongside that, your site needs ${additions.join(', ')}. These workflows are included in the planning estimate.` : ''].filter(Boolean).join(' ');
+
   let editing;
   if (answers.updates === 'team') {
     editing = 'Plan a shared editing system with individual accounts, suitable permissions, and a review process. Decide who can publish and who maintains the site.';
   } else if (answers.updates === 'regular') {
     editing = 'Include a content management system (CMS) or suitable admin tools so you can update content yourself, with reusable layouts and a clear handover.';
-  } else if (['ecommerce', 'booking', 'editorial', 'webapp'].includes(type)) {
+  } else if (['ecommerce', 'booking', 'editorial', 'webapp'].includes(type) ||
+      answers.commerce !== 'no' || answers.bookings !== 'no' || answers.accounts !== 'no') {
     editing = 'Even with infrequent page edits, this site needs management tools for its content, orders, availability, or users. Plan who will look after them.';
   } else {
     editing = 'A lightweight site may be enough. Agree who makes occasional edits and handles upkeep; add a CMS if you want to manage those changes yourself.';
@@ -134,7 +209,7 @@ export function recommendWebsite(answers) {
       ? 'Put time into clear writing, original imagery, and a consistent visual direction. Design those around the core functionality, then check the result on mobile.'
       : 'Plan reusable page layouts, a clear content structure, and the integrations you expect to need. Build the essential workflow first, with room to extend it.';
 
-  return { type, title: base.title, summary: base.summary, reasons, structure, editing, launch };
+  return { type, title: base.title, summary, reasons, structure, editing, launch, estimate: estimateWebsite(answers) };
 }
 
 export function createWebsiteBrief(answers) {
@@ -147,6 +222,9 @@ export function createWebsiteBrief(answers) {
   return [
     'Website project inquiry', '',
     `Suggested website: ${result.title}`, '',
+    `Recommended package: ${result.estimate.tier.name}`, `Indicative build budget: ${result.estimate.label}`,
+    ...result.estimate.drivers, ...result.estimate.adjustments, result.estimate.budgetWarning,
+    result.estimate.caveat, '',
     'I would like to discuss a website based on the following brief.', '',
     'Project requirements:', ...choices, '',
     'Suggested pages and workflows:', ...result.structure.map((item) => `- ${item}`), '',
@@ -164,6 +242,7 @@ export function createWebsiteDescription(answers) {
     focused: 'Your first version would stay focused on one clear offer, with the essential features working from day one.',
     several: 'Your content would be organised into a handful of clear pages or sections so visitors can find what they need.',
     growing: 'Your growing collection would have clear categories and navigation so it stays easy to browse as you add more.',
+    expansive: 'Your larger site would start with information architecture and a carefully scoped set of pages or screens.',
   };
   const editing = {
     occasional: 'You would only need occasional content changes. We would agree who looks after updates and day-to-day management.',
@@ -175,5 +254,7 @@ export function createWebsiteDescription(answers) {
     presentation: 'The first version would give extra attention to your writing, images, and the presentation of your work.',
     growth: 'The structure would leave room for the extra content, features, and connections you expect to add later.',
   };
-  return [result.summary, content[answers.size], editing[answers.updates], launch[answers.priority]].join('\n\n');
+  return [result.summary, content[answers.size], editing[answers.updates], launch[answers.priority],
+    `Suggested package: ${result.estimate.tier.name}. Indicative build budget: ${result.estimate.label}.`,
+    ...result.estimate.adjustments, result.estimate.budgetWarning, result.estimate.caveat].filter(Boolean).join('\n\n');
 }

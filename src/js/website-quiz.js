@@ -1,6 +1,7 @@
 import { WEBSITE_QUESTIONS, recommendWebsite, createWebsiteDescription } from './website-recommendation.js';
 import { saveQuizHandoff } from './quiz-handoff.js';
 import { animateEntrance } from './motion.js';
+import { getTemplate, templateBrief } from './templates.js';
 
 export function initWebsiteQuiz() {
   const root = document.getElementById('website-finder');
@@ -19,6 +20,12 @@ export function initWebsiteQuiz() {
   let answers = {};
   let step = 0;
   let revision = 0;
+  const template = getTemplate(new URL(window.location.href).searchParams.get('template'));
+  const templateNote = document.getElementById('quiz-template');
+  if (template) {
+    templateNote.textContent = `Design direction: ${template.name}. Features and pricing are estimated separately.`;
+    templateNote.hidden = false;
+  }
 
   function focusPanel(target) {
     root.scrollIntoView({ block: 'start', behavior: 'instant' });
@@ -42,7 +49,7 @@ export function initWebsiteQuiz() {
     options.replaceChildren();
     for (const option of question.options) {
       const label = document.createElement('label');
-      label.className = 'quiz-option';
+      label.className = 'quiz-option picker-card';
       const radio = document.createElement('input');
       radio.type = 'radio';
       radio.name = question.id;
@@ -99,7 +106,12 @@ export function initWebsiteQuiz() {
     fillList('quiz-result-structure', result.structure);
     document.getElementById('quiz-result-editing').textContent = result.editing;
     document.getElementById('quiz-result-launch').textContent = result.launch;
+    document.getElementById('quiz-result-tier').textContent = `${result.estimate.tier.name} — ${result.estimate.label}`;
+    fillList('quiz-price-drivers', [...result.estimate.drivers, ...result.estimate.adjustments]);
+    document.getElementById('quiz-budget-warning').textContent = result.estimate.budgetWarning;
+    document.getElementById('quiz-price-caveat').textContent = result.estimate.caveat;
     briefText.value = `${result.title}\n\n${createWebsiteDescription(answers)}\n\nYour starting pages:\n${result.structure.map((item) => `- ${item}`).join('\n')}`;
+    if (template) briefText.value += `\n\n${templateBrief(template.id)}`;
     copyStatus.textContent = '';
     summary.open = false;
     focusPanel(title);
@@ -164,7 +176,7 @@ export function initWebsiteQuiz() {
   });
   document.getElementById('quiz-contact').addEventListener('click', (event) => {
     event.preventDefault();
-    if (saveQuizHandoff(answers)) {
+    if (saveQuizHandoff(answers, template?.id)) {
       window.location.assign('/?website-brief=1#contact');
     } else {
       summary.open = true;

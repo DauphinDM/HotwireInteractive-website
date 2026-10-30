@@ -11,15 +11,15 @@ async function choose(page, value) {
   await page.locator('#quiz-next').click();
 }
 
-async function complete(page, { goal = 'leads', size = 'focused', updates = 'occasional', priority = 'lean' } = {}) {
-  for (const value of [goal, size, updates, priority]) await choose(page, value);
+async function complete(page, { goal = 'leads', size = 'focused', updates = 'occasional', priority = 'lean', commerce = 'no', bookings = 'no', accounts = 'no', content = 'ready', timeline = 'normal', budget = 'unsure' } = {}) {
+  for (const value of [goal, size, updates, priority, commerce, bookings, accounts, content, timeline, budget]) await choose(page, value);
 }
 
 test('requires an answer and preserves choices when moving back', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Next question' }).click();
   await expect(page.getByRole('alert')).toHaveText('Choose one answer to continue.');
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 10');
   await choose(page, 'portfolio');
   await expect(page.locator('#quiz-question')).toBeFocused();
   await choose(page, 'growing');
@@ -51,11 +51,11 @@ test('revising answers updates the result and retaking clears old choices', asyn
   await page.getByRole('button', { name: 'Change my answers' }).click();
   await expect(page.locator('#quiz-options input[value="leads"]')).toBeChecked();
   await choose(page, 'shop');
-  for (let step = 0; step < 3; step++) await page.locator('#quiz-next').click();
+  for (let step = 0; step < 9; step++) await page.locator('#quiz-next').click();
   await expect(page.locator('#quiz-result-title')).toHaveText('An online shop');
   await page.getByRole('button', { name: 'Take it again' }).click();
   await expect(page.locator('#quiz-options input:checked')).toHaveCount(0);
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 10');
   await expect(page.locator('#quiz-result')).toBeHidden();
 });
 
@@ -73,11 +73,11 @@ test('keyboard users can choose an answer and advance without automatic navigati
   await expect(page.getByRole('radio').first()).toBeFocused();
   await page.keyboard.press('ArrowDown');
   await expect(page.getByRole('radio', { name: 'Show my work', exact: true })).toBeChecked();
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 10');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Next question' })).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 2 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 2 of 10');
 });
 
 test('discussing a recommendation transfers the brief once and supports copying and removal', async ({ page }) => {
@@ -111,11 +111,11 @@ test('discussing a recommendation transfers the brief once and supports copying 
 test('the services quiz button starts immediately and retains progress on reuse', async ({ page }) => {
   await page.goto('/websites/');
   await page.getByRole('link', { name: 'Which one fits me?', exact: true }).click();
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 1 of 10');
   await expect(page.locator('#quiz-question')).toBeFocused();
   await choose(page, 'shop');
   await page.getByRole('link', { name: 'Which one fits me?', exact: true }).click();
-  await expect(page.locator('#quiz-step-label')).toHaveText('Question 2 of 4');
+  await expect(page.locator('#quiz-step-label')).toHaveText('Question 2 of 10');
 });
 
 test('blocked storage keeps the recommendation visible with a copy fallback', async ({ page }) => {
@@ -133,7 +133,7 @@ test('blocked storage keeps the recommendation visible with a copy fallback', as
 test('invalid and expired transfers are discarded without attaching a brief', async ({ page }) => {
   await page.goto('/');
   for (const raw of ['not json', JSON.stringify({ answers: {}, createdAt: Date.now() }), JSON.stringify({
-    answers: { goal: 'shop', size: 'focused', updates: 'regular', priority: 'lean' }, createdAt: Date.now() - 11 * 60 * 1000,
+    answers: { goal: 'shop', size: 'focused', updates: 'regular', priority: 'lean', commerce: 'no', bookings: 'no', accounts: 'no', content: 'ready', timeline: 'normal', budget: 'unsure' }, createdAt: Date.now() - 11 * 60 * 1000,
   })]) {
     await page.evaluate((value) => sessionStorage.setItem('hotwire-website-brief', value), raw);
     await page.goto('/?website-brief=1#contact');
@@ -180,7 +180,7 @@ test('quiz fallback works when scripts are unavailable', async ({ browser }) => 
 test('all quiz states fit on a narrow phone and pass automated accessibility checks', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 812 });
   await start(page);
-  for (const value of ['shop', 'growing', 'team', 'growth']) {
+  for (const value of ['shop', 'growing', 'team', 'growth', 'no', 'no', 'no', 'partial', 'normal', 'starter']) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     const result = await new AxeBuilder({ page }).include('#website-quiz').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
     expect(result.violations).toEqual([]);
@@ -190,4 +190,23 @@ test('all quiz states fit on a narrow phone and pass automated accessibility che
   const result = await new AxeBuilder({ page }).include('#website-quiz').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
   expect(result.violations).toEqual([]);
   await page.locator('#website-finder').screenshot({ path: testInfo.outputPath('quiz-result-mobile.png') });
+});
+
+test('a low budget preserves account requirements and explains the mismatch', async ({ page }) => {
+  await start(page);
+  await complete(page, { accounts: 'portal', budget: 'starter' });
+  await expect(page.locator('#quiz-result-tier')).toContainText('Enterprise — €6,500–€14,000+');
+  await expect(page.locator('#quiz-budget-warning')).toContainText('exceed your indicated budget');
+  await expect(page.locator('#quiz-price-drivers')).toContainText('Visitor accounts');
+  await expect(page.locator('#quiz-result-structure')).toContainText('access controls');
+});
+
+test('a selected example survives the quiz and attaches alongside its estimate', async ({ page }) => {
+  await page.goto('/websites/?goal=shop&template=shop#website-quiz');
+  await expect(page.locator('#quiz-template')).toContainText('Objects');
+  await complete(page, { goal: 'shop' });
+  await page.getByRole('link', { name: 'Discuss this website' }).click();
+  await expect(page.locator('#contact-quiz-text')).toContainText('Objects');
+  await expect(page.locator('#contact-quiz-text')).toContainText('Scale');
+  await expect(page.locator('#contact-quiz-text')).toContainText('€3,000–€6,500');
 });

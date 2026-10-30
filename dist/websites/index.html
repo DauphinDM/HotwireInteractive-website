@@ -28,10 +28,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/websites-BQfi6MFB.js"></script>
+  <script type="module" crossorigin src="/assets/websites-Bq_OuWDZ.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/site-RLiH6T7A.js">
-  <link rel="modulepreload" crossorigin href="/assets/quiz-handoff-Bvo8FrWf.js">
-  <link rel="stylesheet" crossorigin href="/assets/style-CEDwU0wM.css">
+  <link rel="modulepreload" crossorigin href="/assets/templates-BBN-xZCU.js">
+  <link rel="modulepreload" crossorigin href="/assets/quiz-handoff-y_WmQlnV.js">
+  <link rel="stylesheet" crossorigin href="/assets/style-PWolKhFz.css">
+  <link rel="stylesheet" crossorigin href="/assets/services-x4gT5xFM.css">
 </head>
 <body class="text-industrial-100 antialiased">
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -74,8 +76,8 @@
       <div class="services-bottom">
         <p>Scope comes first. We’ll discuss the pages, features, and ongoing upkeep before agreeing a quote.</p>
         <div class="services-actions">
-          <div><a id="start-quiz" href="#website-quiz" class="brutal-btn-primary">Which one fits me?</a><p class="quiz-entry-hint">Take the 4-question website quiz.</p></div>
-          <a href="/#contact" class="text-link">Tell us about your project</a>
+          <div><a id="start-quiz" href="#website-quiz" class="brutal-btn-primary">Which one fits me?</a><p class="quiz-entry-hint">10 questions. A scope-led estimate from €500.</p></div>
+          <a href="/websites/pricing/" class="service-link">View packages &amp; pricing</a><a href="/websites/examples/" class="service-link">See example templates</a><a href="/#contact" class="text-link">Tell us about your project</a>
         </div>
       </div>
       </div>
@@ -84,8 +86,9 @@
     <section id="website-quiz" class="page-shell section-pad quiz-layout" aria-labelledby="quiz-title">
       <div class="quiz-introduction">
         <h2 id="quiz-title" class="section-title mb-6">Find the right website<br />for your plans.</h2>
-        <p>Answer four quick questions. You’ll get a suggested website type, a sensible starting structure, and a few things worth planning for.</p>
-        <p class="quiz-privacy">About a minute. No email needed. Your answers stay on this page unless you choose “Discuss this website”.</p>
+        <p>Answer ten questions about your goals, features, content, and budget. Get a website recommendation, a package, and an explained price range.</p>
+        <p class="quiz-privacy">About three minutes. No email needed. Your answers stay on this page unless you choose “Discuss this website”.</p>
+        <p id="quiz-template" class="quiz-privacy" hidden></p>
       </div>
       <div id="website-finder" class="quiz-panel">
         <p id="quiz-fallback">The interactive quiz needs JavaScript. You can <a href="/#contact">tell us what you need</a>.</p>
@@ -96,7 +99,7 @@
         </div>
         <form id="website-quiz-form" novalidate hidden>
           <div class="quiz-progress-row"><p id="quiz-step-label"></p><button id="quiz-restart" class="quiet-button" type="button">Start over</button></div>
-          <progress id="quiz-progress" max="4" value="1" aria-label="Quiz progress"></progress>
+          <progress id="quiz-progress" max="10" value="1" aria-label="Quiz progress"></progress>
           <fieldset id="quiz-question-group" aria-describedby="quiz-question-help quiz-error">
             <legend id="quiz-question" tabindex="-1"></legend>
             <p id="quiz-question-help" class="quiz-help"></p>
@@ -113,6 +116,11 @@
           <h4>Start with</h4><ul id="quiz-result-structure" class="quiz-result-list"></ul>
           <h4>Keeping it up to date</h4><p id="quiz-result-editing"></p>
           <h4>Your first version</h4><p id="quiz-result-launch"></p>
+          <h4>Recommended package</h4><p id="quiz-result-tier"></p>
+          <ul id="quiz-price-drivers" class="quiz-result-list"></ul>
+          <p id="quiz-budget-warning" class="quiz-budget-warning" role="status"></p>
+          <p id="quiz-price-caveat" class="quiz-small"></p>
+          <p class="quiz-small"><a href="/websites/pricing/">Compare packages</a> · <a href="/websites/examples/">Explore design examples</a> · <a href="/websites/agreement/">Agreement &amp; deposit process</a></p>
           <p class="quiz-small">This description is for you to keep. “Discuss this website” prepares a separate project brief for the studio and adds it to the contact form. You only need to add your details and consent; extra notes are optional. Scope and pricing still need a conversation.</p>
           <div class="quiz-result-actions"><a id="quiz-contact" href="/#contact" class="brutal-btn-primary">Discuss this website</a><button id="quiz-copy" class="quiet-button" type="button">Copy recommendation</button></div>
           <p id="quiz-copy-status" class="quiz-copy-status" role="status" aria-live="polite"></p>

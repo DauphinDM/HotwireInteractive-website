@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { WEBSITE_QUESTIONS, recommendWebsite, createWebsiteBrief, createWebsiteDescription } from '../src/js/website-recommendation.js';
 import { createEmailDraft } from '../src/js/contact.js';
 
-const baseline = { goal: 'leads', size: 'focused', updates: 'occasional', priority: 'lean' };
+const baseline = { goal: 'leads', size: 'focused', updates: 'occasional', priority: 'lean', commerce: 'no', bookings: 'no', accounts: 'no', content: 'ready', timeline: 'normal', budget: 'unsure' };
 
 test('maps real goals to the appropriate type, including a landing page versus a business site', () => {
   for (const [goal, type] of Object.entries({ leads: 'landing', portfolio: 'portfolio', shop: 'ecommerce', bookings: 'booking', publishing: 'editorial', app: 'webapp' })) {
@@ -40,10 +40,19 @@ test('incomplete or invalid answers cannot produce a recommendation', () => {
   }
 });
 
-test('all 162 valid answer combinations produce complete, deterministic briefs', () => {
-  let count = 0;
-  function visit(step, answers) {
-    if (step === WEBSITE_QUESTIONS.length) {
+test('every option and 1,000 mixed combinations produce complete, deterministic briefs', () => {
+  const samples = [baseline];
+  for (const question of WEBSITE_QUESTIONS) {
+    for (const option of question.options) samples.push({ ...baseline, [question.id]: option.value });
+  }
+  let seed = 73491;
+  for (let index = 0; index < 1000; index++) {
+    samples.push(Object.fromEntries(WEBSITE_QUESTIONS.map((question) => {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return [question.id, question.options[seed % question.options.length].value];
+    })));
+  }
+  for (const answers of samples) {
       const result = recommendWebsite(answers);
       const brief = createWebsiteBrief(answers);
       assert.ok(result.title && result.summary && result.editing && result.launch);
@@ -57,14 +66,11 @@ test('all 162 valid answer combinations produce complete, deterministic briefs',
       assert.notEqual(description, brief);
       assert.match(brief, /Project requirements:/);
       assert.match(description, /Your|You would/);
-      count += 1;
-      return;
-    }
-    const question = WEBSITE_QUESTIONS[step];
-    for (const option of question.options) visit(step + 1, { ...answers, [question.id]: option.value });
+      assert.ok(result.estimate.from >= 500);
+      assert.ok(result.estimate.to >= result.estimate.from);
+      assert.ok(brief.includes(result.estimate.label));
+      assert.ok(brief.length < 12000);
   }
-  visit(0, {});
-  assert.equal(count, 162);
 });
 
 test('a website brief is appended without losing the visitor’s own message', () => {

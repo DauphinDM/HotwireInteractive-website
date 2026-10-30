@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const pages = ['/', '/websites/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
-const publicPages = pages.filter((path) => path !== '/404.html');
+const demos = ['local', 'portfolio', 'shop', 'booking'].map((id) => `/websites/examples/${id}/`);
+const pages = ['/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', ...demos, '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
+const publicPages = pages.filter((path) => path !== '/404.html' && !demos.includes(path));
 
 async function ready(page, path) {
   const response = await page.goto(path);
@@ -74,7 +75,7 @@ for (const path of pages) {
   });
 }
 
-for (const path of publicPages) {
+for (const path of [...publicPages, ...demos]) {
   test(`${path} has keyboard-operable mobile navigation`, async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await ready(page, path);
@@ -103,7 +104,7 @@ for (const path of publicPages) {
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
-  test(`${path} has a matching canonical URL and unique metadata`, async ({ page }) => {
+  if (!demos.includes(path)) test(`${path} has a matching canonical URL and unique metadata`, async ({ page }) => {
     await ready(page, path);
     const canonical = `https://hotwireinteractive.co.uk${path}`;
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
@@ -145,6 +146,7 @@ test('mobile contact link lands below the fixed header and closes the menu', asy
 });
 
 test('all internal links and bundled resources resolve', async ({ page, request }) => {
+  test.setTimeout(90_000);
   const urls = new Set();
   for (const path of pages) {
     await ready(page, path);

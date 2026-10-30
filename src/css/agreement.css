@@ -1,0 +1,31 @@
+.process-list { list-style: decimal-leading-zero; padding-left: 2rem; margin-top: 2rem; }
+.process-list li { padding-left: 0.75rem; margin-bottom: 2rem; }
+.process-list li::marker { color: #ff905f; font-family: var(--font-heading); }
+.process-list h3 { font: 600 1.25rem/1.4 var(--font-heading); }
+.process-list p { max-width: 75ch; color: var(--muted); line-height: 1.9; margin-block: 0.75rem; }
+.process-list address { font-style: normal; border-left: 2px solid var(--accent); padding: 0.75rem 1rem; margin-block: 1rem; line-height: 1.8; }
+.agreement-editor { max-width: 56rem; display: grid; gap: 1.5rem; margin-block: 2rem; }
+.agreement-editor > button { justify-self: start; }
+.agreement-document { background: #fffdf8; color: #252721; color-scheme: light; padding: clamp(1.25rem, 4vw, 3.5rem); margin-top: 2rem; border: 1px solid #b9bfb5; overflow-wrap: anywhere; }
+.agreement-document h2 { font: 600 clamp(1.625rem, 3vw, 2.25rem)/1.2 var(--font-heading); margin-block: 1.5rem; }
+.agreement-document h3 { font: 600 1.125rem/1.5 var(--font-heading); margin-top: 2rem; break-after: avoid; }
+.agreement-document p, .agreement-document li { font-size: 0.875rem; line-height: 1.9; margin-block: 0.75rem; }
+.agreement-document [data-agreement] { white-space: pre-wrap; }
+.agreement-document ul { list-style: disc; padding-left: 1.25rem; }
+.agreement-document :focus-visible { outline-color: #a83305; }
+.draft-warning { font-weight: 700; border-block: 2px solid currentColor; padding-block: 0.75rem; }
+.signature-grid { display: grid; gap: 2rem; margin-top: 2rem; break-inside: avoid; }
+@media (min-width: 640px) { .signature-grid { grid-template-columns: 1fr 1fr; } }
+@media print {
+  @page { size: A4; margin: 18mm; }
+  html, body { background: #fff !important; color: #000 !important; min-height: 0; }
+  body { display: block; }
+  .skip-link, #navbar, .site-footer, .page-intro, .agreement-process, #review-draft, .service-note { display: none !important; }
+  .page-shell { width: 100%; }
+  .section-pad { padding: 0; }
+  .agreement-document { padding: 0; margin: 0; border: 0; background: #fff; color: #000; }
+  .agreement-document p, .agreement-document li { font-size: 10pt; }
+  .agreement-document h2 { font-size: 18pt; }
+  .agreement-document h3 { font-size: 12pt; }
+  .signature-grid { grid-template-columns: 1fr 1fr; }
+}

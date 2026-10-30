@@ -1,3 +1,5 @@
+@import './pickers.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,19 +27,9 @@ html {
 }
 
 body {
-<<<<<<< HEAD
   min-width: 0;
   min-height: 100vh;
   min-height: 100svh;
-=======
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden;
-  background-color: #080808;
-  -webkit-font-smoothing: antialiased;
-
-  /* Added to push footer to bottom */
-  min-height: 100dvh;
->>>>>>> 784a34668a5015fe962023f3e7222e0a6e5677ef
   display: flex;
   flex-direction: column;
   background: var(--page);
@@ -122,19 +114,11 @@ button:disabled { cursor: wait; opacity: 0.7; }
   transition: background-color 0.15s ease, border-color 0.15s ease;
   border-radius: 2px;
 }
-<<<<<<< HEAD
 .brutal-btn-primary { background: var(--accent); color: #11110f; border: 1px solid var(--accent); }
 .brutal-btn-secondary { background: transparent; color: #f5f5f5; border: 1px solid #777970; }
 @media (hover: hover) {
   .brutal-btn-primary:hover { background: #ff8653; border-color: #ff8653; }
   .brutal-btn-secondary:hover { border-color: var(--accent); }
-=======
-
-.reveal {
-  opacity: 0;
-  transform: translateY(1.5rem);
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
->>>>>>> 784a34668a5015fe962023f3e7222e0a6e5677ef
 }
 .brutal-btn-primary:active { background: #ff905f; }
 .text-link { display: inline-flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; font: 500 0.875rem/1.6 var(--font-body); color: #ff905f; text-decoration: underline; text-underline-offset: 5px; }
@@ -347,12 +331,6 @@ a.team-card:hover, a.team-card:focus-visible { border-color: var(--accent); }
   .brand-mark { width: 2rem; height: 2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-<<<<<<< HEAD
   html, html.scroll-smooth { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-=======
-  html {
-    scroll-behavior: auto;
-  }
->>>>>>> 784a34668a5015fe962023f3e7222e0a6e5677ef
 }

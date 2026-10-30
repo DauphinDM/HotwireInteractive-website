@@ -30,6 +30,13 @@ export default {
       input: {
         main: resolve(root, 'index.html'),
         websites: resolve(root, 'websites/index.html'),
+        pricing: resolve(root, 'websites/pricing/index.html'),
+        examples: resolve(root, 'websites/examples/index.html'),
+        exampleLocal: resolve(root, 'websites/examples/local/index.html'),
+        examplePortfolio: resolve(root, 'websites/examples/portfolio/index.html'),
+        exampleShop: resolve(root, 'websites/examples/shop/index.html'),
+        exampleBooking: resolve(root, 'websites/examples/booking/index.html'),
+        agreement: resolve(root, 'websites/agreement/index.html'),
         privacy: resolve(root, 'privacy/index.html'),
         terms: resolve(root, 'terms/index.html'),
         cookies: resolve(root, 'cookies/index.html'),

@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/render-examples.mjs",
     "build": "vite build",
     "build:social": "node scripts/render-social.mjs",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:unit": "node --test tests/email-draft.test.js tests/website-recommendation.test.js",
+    "test:unit": "node --test tests/email-draft.test.js tests/website-recommendation.test.js tests/pricing.test.js",
     "test:php": "node scripts/test-php.mjs",
     "test:browser:install": "playwright install chromium"
   },
