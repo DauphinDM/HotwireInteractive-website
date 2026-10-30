@@ -1,0 +1,5 @@
+# Optional catalogue-generation tooling only; not needed to build or host the site.
+ctranslate2==4.8.4
+sentencepiece==0.2.1
+numpy==2.5.4
+PyYAML==6.0.3

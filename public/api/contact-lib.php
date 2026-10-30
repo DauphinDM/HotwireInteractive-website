@@ -7,13 +7,38 @@ const HOTWIRE_CATEGORIES = [
     'website' => 'Website project', 'studio' => 'Studio inquiry', 'press' => 'Press & media',
     'collaboration' => 'Creative collaboration', 'other' => 'General inquiry',
 ];
+const HOTWIRE_LANGUAGES = ['en' => 'English', 'nl' => 'Nederlands', 'fr' => 'Français', 'de' => 'Deutsch'];
+
+function contact_locale($value): string
+{
+    return is_string($value) && isset(HOTWIRE_LANGUAGES[$value]) ? $value : 'en';
+}
+
+function contact_text(string $source, string $locale): string
+{
+    static $catalogues = [];
+    $locale = contact_locale($locale);
+    if ($locale === 'en') return $source;
+    if (!isset($catalogues[$locale])) {
+        // Only fixed, allowlisted locale codes reach this path. No network requests.
+        $directory = getenv('HOTWIRE_TRANSLATION_DIR') ?: __DIR__ . '/../i18n';
+        $file = $directory . '/' . $locale . '.json';
+        $catalogues[$locale] = is_readable($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
+    }
+    return is_string($catalogues[$locale][$source] ?? null) && $catalogues[$locale][$source] !== '' ? $catalogues[$locale][$source] : $source;
+}
+
+function contact_path(string $path, string $locale): string
+{
+    return ($locale === 'en' ? '' : '/' . contact_locale($locale)) . $path;
+}
 
 function contact_validate(array $input): array
 {
-    $limits = ['name' => 100, 'email' => 254, 'category' => 30, 'message' => 1500, 'brief' => 12000, 'consent' => 1, 'company_url' => 200, 'request_id' => 32];
+    $limits = ['name' => 100, 'email' => 254, 'category' => 30, 'message' => 1500, 'brief' => 12000, 'consent' => 1, 'company_url' => 200, 'request_id' => 32, 'locale' => 2];
     $clean = [];
     foreach ($limits as $key => $limit) {
-        $value = $input[$key] ?? '';
+        $value = $input[$key] ?? ($key === 'locale' ? 'en' : '');
         if (!is_string($value) || !preg_match('//u', $value) || preg_match_all('/./us', $value) > $limit || strpos($value, "\0") !== false) {
             return [null, 'One of the fields is invalid or too long. Please check your inquiry.'];
         }
@@ -23,6 +48,7 @@ function contact_validate(array $input): array
     if ($clean['name'] === '' || preg_match('/[\r\n\x00-\x1f\x7f]/', $clean['name'])) return [null, 'Please enter your name or studio on one line.'];
     if (!filter_var($clean['email'], FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $clean['email'])) return [null, 'Please enter a valid email address.'];
     if (!isset(HOTWIRE_CATEGORIES[$clean['category']])) return [null, 'Please choose a valid inquiry type.'];
+    if (!isset(HOTWIRE_LANGUAGES[$clean['locale']])) return [null, 'Please choose a supported language.'];
     if ($clean['message'] === '' && $clean['brief'] === '') return [null, 'Please enter a message or include your quiz brief.'];
     if ($clean['consent'] !== '1') return [null, 'Please agree to the use of your details so we can respond.'];
     if (!preg_match('/^[a-f0-9]{32}$/D', $clean['request_id'])) return [null, 'Please reload the form and try again.'];
@@ -62,7 +88,7 @@ function contact_rate_limit(string $directory, string $client, int $now): bool
 function contact_payload_hash(array $data): string
 {
     $payload = [];
-    foreach (['name', 'email', 'category', 'message', 'brief', 'consent'] as $field) $payload[$field] = $data[$field];
+    foreach (['name', 'email', 'category', 'message', 'brief', 'consent', 'locale'] as $field) $payload[$field] = $data[$field] ?? ($field === 'locale' ? 'en' : '');
     return hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR));
 }
 
@@ -76,6 +102,7 @@ function contact_receipt_status(array $receipts, array $data, int $now): string
 function contact_deliver(array $data, callable $transport): bool
 {
     $body = "Name / studio: {$data['name']}\r\nEmail: {$data['email']}\r\nInquiry type: " . HOTWIRE_CATEGORIES[$data['category']] . "\r\n\r\n" . $data['message'];
+    $body .= "\r\n\r\nPreferred language: " . HOTWIRE_LANGUAGES[contact_locale($data['locale'] ?? 'en')];
     if ($data['brief'] !== '') $body .= "\r\n\r\nWebsite quiz brief:\r\n" . $data['brief'];
     $body .= "\r\n\r\nThe visitor agreed to the use of their details to respond to this inquiry.";
     $headers = [

@@ -2,6 +2,7 @@ import { WEBSITE_QUESTIONS, recommendWebsite, createWebsiteDescription } from '.
 import { saveQuizHandoff } from './quiz-handoff.js';
 import { animateEntrance } from './motion.js';
 import { getTemplate, templateBrief } from './templates.js';
+import { t, localizedObject, localHref } from '../i18n/index.js';
 
 export function initWebsiteQuiz() {
   const root = document.getElementById('website-finder');
@@ -22,28 +23,30 @@ export function initWebsiteQuiz() {
   let revision = 0;
   const template = getTemplate(new URL(window.location.href).searchParams.get('template'));
   const templateNote = document.getElementById('quiz-template');
-  if (template) {
-    templateNote.textContent = `Design direction: ${template.name}. Features and pricing are estimated separately.`;
+  function renderTemplateNote() { if (template) {
+    templateNote.textContent = t('Design direction: {design}. Features and pricing are estimated separately.', { design: t(template.name) });
     templateNote.hidden = false;
-  }
+  } }
+  renderTemplateNote();
 
   function focusPanel(target) {
     root.scrollIntoView({ block: 'start', behavior: 'instant' });
     target.focus({ preventScroll: true });
   }
 
-  function renderQuestion() {
+  function renderQuestion(focus = true) {
     revision += 1;
     welcome.hidden = true;
     resultPanel.hidden = true;
     form.hidden = false;
     error.textContent = '';
-    const question = WEBSITE_QUESTIONS[step];
-    document.getElementById('quiz-step-label').textContent = `Question ${step + 1} of ${WEBSITE_QUESTIONS.length}`;
+    const question = localizedObject(WEBSITE_QUESTIONS[step]);
+    const stepText = t('Question {current} of {total}', { current: step + 1, total: WEBSITE_QUESTIONS.length });
+    document.getElementById('quiz-step-label').textContent = stepText;
     const progress = document.getElementById('quiz-progress');
     progress.max = WEBSITE_QUESTIONS.length;
     progress.value = step + 1;
-    progress.setAttribute('aria-valuetext', `Question ${step + 1} of ${WEBSITE_QUESTIONS.length}`);
+    progress.setAttribute('aria-valuetext', stepText);
     questionTitle.textContent = question.title;
     document.getElementById('quiz-question-help').textContent = question.help;
     options.replaceChildren();
@@ -70,8 +73,8 @@ export function initWebsiteQuiz() {
       options.append(label);
     }
     back.hidden = step === 0;
-    next.textContent = step === WEBSITE_QUESTIONS.length - 1 ? 'See my recommendation' : 'Next question';
-    focusPanel(questionTitle);
+    next.textContent = t(step === WEBSITE_QUESTIONS.length - 1 ? 'See my recommendation' : 'Next question');
+    if (focus) focusPanel(questionTitle);
     animateEntrance(options, 0, 240);
   }
 
@@ -93,7 +96,7 @@ export function initWebsiteQuiz() {
     }));
   }
 
-  function renderResult() {
+  function renderResult(focus = true) {
     const result = recommendWebsite(answers);
     if (!result) return;
     revision += 1;
@@ -110,11 +113,11 @@ export function initWebsiteQuiz() {
     fillList('quiz-price-drivers', [...result.estimate.drivers, ...result.estimate.adjustments]);
     document.getElementById('quiz-budget-warning').textContent = result.estimate.budgetWarning;
     document.getElementById('quiz-price-caveat').textContent = result.estimate.caveat;
-    briefText.value = `${result.title}\n\n${createWebsiteDescription(answers)}\n\nYour starting pages:\n${result.structure.map((item) => `- ${item}`).join('\n')}`;
+    briefText.value = `${result.title}\n\n${createWebsiteDescription(answers)}\n\n${t('Your starting pages:')}\n${result.structure.map((item) => `- ${item}`).join('\n')}`;
     if (template) briefText.value += `\n\n${templateBrief(template.id)}`;
     copyStatus.textContent = '';
     summary.open = false;
-    focusPanel(title);
+    if (focus) focusPanel(title);
     animateEntrance(document.getElementById('quiz-result-summary'), 0, 400);
   }
 
@@ -131,7 +134,7 @@ export function initWebsiteQuiz() {
     // Read checked state as well, so browser-restored radio state is respected.
     const selected = options.querySelector('input:checked');
     if (!selected) {
-      error.textContent = 'Choose one answer to continue.';
+      error.textContent = t('Choose one answer to continue.');
       options.querySelectorAll('input').forEach((input) => input.setAttribute('aria-invalid', 'true'));
       options.querySelector('input').focus();
       return;
@@ -165,29 +168,34 @@ export function initWebsiteQuiz() {
     const currentRevision = revision;
     try {
       await navigator.clipboard.writeText(briefText.value);
-      if (currentRevision === revision) copyStatus.textContent = 'Recommendation copied. Keep it for yourself or include it in a project brief.';
+      if (currentRevision === revision) copyStatus.textContent = t('Recommendation copied. Keep it for yourself or include it in a project brief.');
     } catch {
       if (currentRevision !== revision) return;
       summary.open = true;
       briefText.focus();
       briefText.select();
-      copyStatus.textContent = 'Automatic copying is unavailable. Your brief is selected below so you can copy it manually.';
+      copyStatus.textContent = t('Automatic copying is unavailable. Your brief is selected below so you can copy it manually.');
     }
   });
   document.getElementById('quiz-contact').addEventListener('click', (event) => {
     event.preventDefault();
     if (saveQuizHandoff(answers, template?.id)) {
-      window.location.assign('/?website-brief=1#contact');
+      window.location.assign(localHref('/?website-brief=1#contact'));
     } else {
       summary.open = true;
       briefText.focus();
       briefText.select();
-      copyStatus.textContent = 'Your browser could not carry the brief to the contact page. Copy the selected brief, then use Contact in the navigation to include it in your message.';
+      copyStatus.textContent = t('Your browser could not carry the brief to the contact page. Copy the selected brief, then use Contact in the navigation to include it in your message.');
     }
   });
 
   document.getElementById('quiz-fallback').hidden = true;
   welcome.hidden = false;
+  window.addEventListener('hotwire:languagechange', () => {
+    renderTemplateNote();
+    if (!form.hidden) renderQuestion(false);
+    else if (!resultPanel.hidden) renderResult(false);
+  });
   const goal = new URL(window.location.href).searchParams.get('goal');
   if (WEBSITE_QUESTIONS[0].options.some((option) => option.value === goal)) {
     // Initial fragment navigation can otherwise steal focus after the module runs.

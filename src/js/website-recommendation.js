@@ -1,4 +1,5 @@
 import { estimateWebsite } from './pricing.js';
+import { getLocale, t, localizedObject } from '../i18n/index.js';
 
 export const WEBSITE_QUESTIONS = [
   {
@@ -154,7 +155,7 @@ const LEAN_LAUNCH = {
   webapp: 'Build one complete user workflow first. Include the permissions, data protection, and recovery paths it needs.',
 };
 
-export function recommendWebsite(answers) {
+export function recommendWebsite(answers, locale = getLocale()) {
   if (!answers || WEBSITE_QUESTIONS.some((question) =>
     !question.options.some((option) => option.value === answers[question.id]))) return null;
 
@@ -190,7 +191,7 @@ export function recommendWebsite(answers) {
     structure.push('Visitor sign-in, access controls, and account recovery');
     additions.push('private visitor accounts');
   }
-  const summary = [base.summary, additions.length ? `Alongside that, your site needs ${additions.join(', ')}. These workflows are included in the planning estimate.` : ''].filter(Boolean).join(' ');
+  const summary = [t(base.summary, {}, locale), additions.length ? t('Alongside that, your site needs {features}. These workflows are included in the planning estimate.', { features: additions.map((item) => t(item, {}, locale)).join(', ') }, locale) : ''].filter(Boolean).join(' ');
 
   let editing;
   if (answers.updates === 'team') {
@@ -209,34 +210,34 @@ export function recommendWebsite(answers) {
       ? 'Put time into clear writing, original imagery, and a consistent visual direction. Design those around the core functionality, then check the result on mobile.'
       : 'Plan reusable page layouts, a clear content structure, and the integrations you expect to need. Build the essential workflow first, with room to extend it.';
 
-  return { type, title: base.title, summary, reasons, structure, editing, launch, estimate: estimateWebsite(answers) };
+  return localizedObject({ type, title: base.title, summary, reasons, structure, editing, launch, estimate: estimateWebsite(answers, locale) }, locale);
 }
 
-export function createWebsiteBrief(answers) {
-  const result = recommendWebsite(answers);
+export function createWebsiteBrief(answers, locale = getLocale()) {
+  const result = recommendWebsite(answers, locale);
   if (!result) return '';
   const choices = WEBSITE_QUESTIONS.map((question) => {
     const option = question.options.find((item) => item.value === answers[question.id]);
-    return `${question.label}: ${option.label}`;
+    return `${t(question.label, {}, locale)}: ${t(option.label, {}, locale)}`;
   });
   return [
-    'Website project inquiry', '',
-    `Suggested website: ${result.title}`, '',
-    `Recommended package: ${result.estimate.tier.name}`, `Indicative build budget: ${result.estimate.label}`,
+    t('Website project inquiry', {}, locale), '',
+    t('Suggested website: {website}', { website: result.title }, locale), '',
+    t('Recommended package: {package}', { package: result.estimate.tier.name }, locale), t('Indicative build budget: {price}', { price: result.estimate.label }, locale),
     ...result.estimate.drivers, ...result.estimate.adjustments, result.estimate.budgetWarning,
     result.estimate.caveat, '',
-    'I would like to discuss a website based on the following brief.', '',
-    'Project requirements:', ...choices, '',
-    'Suggested pages and workflows:', ...result.structure.map((item) => `- ${item}`), '',
-    `Content management and handover: ${result.editing}`, '', `Initial scope: ${result.launch}`, '',
-    'Please help me confirm the scope, any integrations, and a quote.', '',
-    'A planning recommendation; scope and quote to be discussed.',
+    t('I would like to discuss a website based on the following brief.', {}, locale), '',
+    t('Project requirements:', {}, locale), ...choices, '',
+    t('Suggested pages and workflows:', {}, locale), ...result.structure.map((item) => `- ${item}`), '',
+    t('Content management and handover: {editing}', { editing: result.editing }, locale), '', t('Initial scope: {scope}', { scope: result.launch }, locale), '',
+    t('Please help me confirm the scope, any integrations, and a quote.', {}, locale), '',
+    t('A planning recommendation; scope and quote to be discussed.', {}, locale),
   ].join('\n');
 }
 
 // The visitor's plain-language description is deliberately separate from the studio brief.
-export function createWebsiteDescription(answers) {
-  const result = recommendWebsite(answers);
+export function createWebsiteDescription(answers, locale = getLocale()) {
+  const result = recommendWebsite(answers, locale);
   if (!result) return '';
   const content = {
     focused: 'Your first version would stay focused on one clear offer, with the essential features working from day one.',
@@ -254,7 +255,7 @@ export function createWebsiteDescription(answers) {
     presentation: 'The first version would give extra attention to your writing, images, and the presentation of your work.',
     growth: 'The structure would leave room for the extra content, features, and connections you expect to add later.',
   };
-  return [result.summary, content[answers.size], editing[answers.updates], launch[answers.priority],
-    `Suggested package: ${result.estimate.tier.name}. Indicative build budget: ${result.estimate.label}.`,
+  return [result.summary, t(content[answers.size], {}, locale), t(editing[answers.updates], {}, locale), t(launch[answers.priority], {}, locale),
+    t('Suggested package: {package}. Indicative build budget: {price}.', { package: result.estimate.tier.name, price: result.estimate.label }, locale),
     ...result.estimate.adjustments, result.estimate.budgetWarning, result.estimate.caveat].filter(Boolean).join('\n\n');
 }

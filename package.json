@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/render-examples.mjs",
+    "prebuild": "node scripts/prepare-build.mjs",
     "build": "vite build",
     "build:social": "node scripts/render-social.mjs",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:unit": "node --test tests/email-draft.test.js tests/website-recommendation.test.js tests/pricing.test.js",
+    "test:unit": "node --test tests/email-draft.test.js tests/website-recommendation.test.js tests/pricing.test.js tests/i18n.test.js",
     "test:php": "node scripts/test-php.mjs",
-    "test:browser:install": "playwright install chromium"
+    "test:browser:install": "playwright install chromium",
+    "i18n:sync": "node scripts/i18n.mjs sync",
+    "i18n:check": "node scripts/i18n.mjs check",
+    "i18n:translate": "node scripts/i18n.mjs translate"
   },
   "engines": {
     "node": ">=20.19.0"
@@ -20,7 +23,9 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.64.1",
+    "acorn": "^8.19.0",
     "autoprefixer": "^10.4.19",
+    "linkedom": "^0.18.14",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite": "^6.4.5"

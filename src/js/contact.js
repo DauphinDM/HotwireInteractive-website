@@ -1,15 +1,16 @@
+import { getLocale, t } from '../i18n/index.js';
 const STUDIO_EMAIL = 'contact@hotwireinteractive.co.uk';
 
 export function createEmailDraft({ name, email, category, message, brief = '' }) {
   const sender = name.trim().replace(/[\r\n]+/g, ' ');
-  const subject = `${category} from ${sender}`;
+  const subject = t('{category} from {sender}', { category, sender });
   const body = [
-    `Name / studio: ${sender}`,
-    `Email: ${email.trim()}`,
-    `Inquiry type: ${category}`,
+    t('Name / studio: {name}', { name: sender }),
+    t('Email: {email}', { email: email.trim() }),
+    t('Inquiry type: {category}', { category }),
     '',
     message.trim(),
-    ...(brief ? ['', 'Website quiz brief:', brief] : []),
+    ...(brief ? ['', t('Website quiz brief:'), brief] : []),
   ].join('\r\n');
 
   return {
@@ -32,6 +33,8 @@ export function initContactForm() {
   const briefInput = document.getElementById('contact-brief');
   const message = form.elements.namedItem('message');
   const submit = document.getElementById('contact-submit');
+  const localeInput = document.createElement('input');
+  localeInput.type = 'hidden'; localeInput.name = 'locale'; localeInput.value = getLocale(); form.append(localeInput);
   let websiteBrief = '';
   let busy = false;
   let sent = false;
@@ -41,21 +44,23 @@ export function initContactForm() {
     sent = false;
     if (!busy) {
       submit.disabled = false;
-      submit.textContent = 'Send inquiry';
+      submit.textContent = t('Send inquiry');
     }
     const requestId = form.elements.namedItem('request_id');
     if (requestId) requestId.value = '';
   };
 
+  let lastStatus = '';
   const setStatus = (text, state = '') => {
-    status.textContent = text;
+    lastStatus = text;
+    status.textContent = t(text);
     status.dataset.state = state;
   };
 
   const validate = (forSending = true) => {
     for (const name of ['name', 'email', 'message']) {
       const field = form.elements.namedItem(name);
-      field.setCustomValidity(field.required && !field.value.trim() ? 'Please complete this field.' : '');
+      field.setCustomValidity(field.required && !field.value.trim() ? t('Please complete this field.') : '');
     }
     const consent = form.elements.namedItem('consent');
     // Copying is local: permission to send an inquiry is not needed to keep a copy.
@@ -112,7 +117,7 @@ export function initContactForm() {
     // Freeze a single snapshot before requesting the security token. FormData omits
     // disabled fields, so it must be constructed before the controls are disabled.
     controls.forEach((control) => { control.disabled = true; });
-    submit.textContent = 'Sending…';
+    submit.textContent = t('Sending…');
     form.setAttribute('aria-busy', 'true');
     setStatus('Sending your inquiry…');
     const controller = new AbortController();
@@ -138,7 +143,7 @@ export function initContactForm() {
       controls.forEach((control) => { control.disabled = false; });
       busy = false;
       submit.disabled = sent;
-      submit.textContent = sent ? 'Inquiry sent' : 'Send inquiry';
+      submit.textContent = t(sent ? 'Inquiry sent' : 'Send inquiry');
       form.removeAttribute('aria-busy');
     }
   });
@@ -156,7 +161,7 @@ export function initContactForm() {
       preview.open = true;
       draftText.focus();
       draftText.select();
-      status.textContent = 'Automatic copying is unavailable. Your draft is selected below; copy it and paste it into your email app.';
+      setStatus('Automatic copying is unavailable. Your draft is selected below; copy it and paste it into your email app.');
     }
   });
 
@@ -170,12 +175,19 @@ export function initContactForm() {
     websiteBrief = '';
     briefInput.value = '';
     message.required = true;
-    document.getElementById('message-label').textContent = 'Your message';
+    document.getElementById('message-label').textContent = t('Your message');
     attachment.hidden = true;
     attachmentText.textContent = '';
     preview.hidden = true;
-    status.textContent = 'Website recommendation removed. Your message and contact details are still here.';
+    setStatus('Website recommendation removed. Your message and contact details are still here.');
     category.focus();
+  });
+
+  window.addEventListener('hotwire:languagechange', () => {
+    localeInput.value = getLocale();
+    document.getElementById('message-label').textContent = t(websiteBrief ? 'Your message (optional)' : 'Your message');
+    submit.textContent = t(busy ? 'Sending…' : sent ? 'Inquiry sent' : 'Send inquiry');
+    if (status.textContent && lastStatus) status.textContent = t(lastStatus);
   });
 
   return {
@@ -187,10 +199,10 @@ export function initContactForm() {
       attachment.hidden = false;
       category.value = 'website';
       message.required = false;
-      document.getElementById('message-label').textContent = 'Your message (optional)';
+      document.getElementById('message-label').textContent = t('Your message (optional)');
       message.setCustomValidity('');
       preview.hidden = true;
-      status.textContent = 'Your project brief is attached. Just add your name, email, and consent to send it. Extra notes are optional.';
+      setStatus('Your project brief is attached. Just add your name, email, and consent to send it. Extra notes are optional.');
     },
   };
 }

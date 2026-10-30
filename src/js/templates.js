@@ -1,3 +1,6 @@
+import { t, getLocale } from '../i18n/index.js';
+import { localePath } from '../i18n/config.js';
+
 export const WEBSITE_TEMPLATES = [
   { id: 'local', name: 'Fieldwork — local services', goal: 'leads', tier: 'Starter', price: 500 },
   { id: 'portfolio', name: 'Forma — creative portfolio', goal: 'portfolio', tier: 'Growth', price: 1200 },
@@ -11,5 +14,9 @@ export function getTemplate(id) {
 
 export function templateBrief(id) {
   const template = getTemplate(id);
-  return template ? `Preferred design direction: ${template.name}\nPreview: https://hotwireinteractive.co.uk/websites/examples/${template.id}/\nThis is a fictional design demonstration, not a live customer site or a fixed specification. Please confirm scope, total price, and ongoing costs before any agreement.` : '';
+  return template ? [
+    t('Preferred design direction: {design}', { design: t(template.name) }),
+    t('Preview: {url}', { url: 'https://hotwireinteractive.co.uk' + localePath(`/websites/examples/${template.id}/`, getLocale()) }),
+    t('This is a fictional design demonstration, not a live customer site or a fixed specification. Please confirm scope, total price, and ongoing costs before any agreement.'),
+  ].join('\n') : '';
 }

@@ -45,6 +45,9 @@ To test with an installed Chrome or Edge browser instead of downloading Chromium
 - `404.html` — recovery page for missing URLs
 - `src/css/style.css` — shared responsive design and accessibility styles
 - `src/js/site.js` — shared navigation and year display
+- `src/i18n/` — language registry, local catalogues, in-place switching, and curated core translations
+- `scripts/i18n-vite-plugin.mjs` — shared header enhancement, static translated routes, metadata, and sitemap generation
+- `scripts/i18n.mjs` — extraction, translation checks, and optional offline draft generation
 - `src/js/contact.js` — secure inquiry submission, local draft composition, and copy fallback
 - `src/js/website-quiz.js` — accessible quiz state, navigation, and contact hand-off
 - `src/js/websites.js` — services-page initialization
@@ -79,6 +82,28 @@ The owner has confirmed the company is not registered yet. Registration/tax deta
 
 No payment gateway or online signature verification is implemented. The operational gate is manual: verify the returned signed agreement and independently reconcile the cleared 50% deposit, then confirm kickoff in writing. Never accept a checkbox, client-side state, screenshot, or inquiry acceptance as payment evidence. Use `ai_here/kickoff-checklist.md` in a private project record, outside the public repository. The proposed remaining payments are 25% at an agreed milestone and 25% before launch/handover.
 
+## Languages and easier navigation
+
+Pricing and Examples are now top-level navigation links, visible shortcuts on phones, and direct homepage calls to action. The shared build plugin applies this navigation consistently to every full page.
+
+English remains at `/`; Dutch, French, and German use `/nl/`, `/fr/`, and `/de/`. Localized HTML, internal links, metadata, hreflang alternates, and sitemap entries are generated automatically from the English sources. These pages work without JavaScript. With JavaScript, the language switcher changes language **without losing a typed inquiry, draft fields, or quiz progress**. It remembers only an explicit language choice; otherwise it detects the browser's supported language. Explicit localized URLs take priority.
+
+The checked-in catalogues cover the current pages, interface, quiz/results, and standalone PHP form. Prices use locale-aware EUR display. User messages and draft fields are never translated or uploaded. Contact submissions include a validated communication-language preference; sender/recipient and mail transport settings are unchanged.
+
+After editing English copy:
+
+```sh
+npm run i18n:sync
+# Fill new entries, or use the optional offline draft translator:
+node scripts/i18n.mjs translate --model-dir PATH_TO_MODELS --download-models
+npm run i18n:check
+npm run build
+```
+
+The optional translator uses an isolated Python environment with `scripts/requirements-i18n.txt`, selected through `HOTWIRE_I18N_PYTHON`. It downloads pinned, hash-verified public models only with explicit opt-in; subsequent generation can run fully offline. Ordinary builds and hosting need no models, Python, API keys, paid translation service, or translation requests. Existing editorial changes are preserved. Setup and adding languages: `ai_here/languages.md`. Core curated translations are in `src/i18n/editorial.json`, applied with `node scripts/apply-editorial.mjs`.
+
+Translations are machine-assisted drafts with curated key navigation/actions/warnings, **not certified legal translations**. Obtain appropriate review of commercial/legal copy. Agreements remain review drafts and registration details remain pending.
+
 ## Social artwork
 
 `public/social-websites.png` is the current 1200×630 social preview. Its editable source is `public/social-websites.svg`. After editing the SVG, run `npm run build:social` with a Playwright browser installed (or `PLAYWRIGHT_CHANNEL=msedge`/`chrome`), then rebuild the site. The generated PNG is included with the other public artwork, so ordinary builds do not need a browser.
@@ -87,7 +112,7 @@ No payment gateway or online signature verification is implemented. The operatio
 
 Pages are statically built, with a **PHP 8.2+ contact endpoint** at `public/api/contact.php` (copied to `dist/api/`). The form sends directly through the host's mail transport; no email app is required. It validates a session CSRF token, consent, field lengths/types, a honeypot, and rate limits. A successful response means the mail server accepted the inquiry, not guaranteed inbox delivery. Fields remain available, and copying is a fallback. Without JavaScript, the endpoint provides a server-rendered form. See `DEPLOY.md` for sender authorization and live-delivery checks.
 
-The owner confirmed live email is already configured. This revision does not change the mail backend, sender configuration, or legacy root `contact.php`.
+The owner confirmed live email is already configured. Its sender, recipient, transport configuration, and legacy root `contact.php` are unchanged. The active `/api/` endpoint now validates the selected language, includes it in receipt matching and the studio email, and serves its native form from local translated catalogues. Tests send no real mail.
 
 The quiz generates two separate outputs: a plain-language website description for the visitor and a detailed inquiry brief for the studio. “Discuss this website” attaches the latter automatically; only name, email, and consent are then required. Extra notes are optional. Names, email addresses, and messages are never written to browser storage.
 

@@ -1,5 +1,6 @@
 import { initSite } from './site.js';
 import { initContactForm } from './contact.js';
+import { t } from '../i18n/index.js';
 
 initSite();
 const contact = initContactForm();
@@ -16,7 +17,7 @@ if (url.searchParams.has('template') && url.searchParams.get('website-brief') !=
       document.getElementById('name').focus();
     }
   }).catch(() => {
-    document.getElementById('contact-status').textContent = 'Please include the example design name in your message.';
+    document.getElementById('contact-status').textContent = t('Please include the example design name in your message.');
   });
 }
 if (url.searchParams.get('website-brief') === '1') {
@@ -29,9 +30,9 @@ if (url.searchParams.get('website-brief') === '1') {
       contact.attachWebsiteBrief(brief);
       document.getElementById('name').focus();
     } else if (contact) {
-      document.getElementById('contact-status').textContent = 'Your quiz brief has expired or is unavailable. Please retake the quiz, or describe your project in the message below.';
+      document.getElementById('contact-status').textContent = t('Your quiz brief has expired or is unavailable. Please retake the quiz, or describe your project in the message below.');
     }
   }).catch(() => {
-    document.getElementById('contact-status').textContent = 'The website brief could not be loaded. Return to the quiz and use Copy recommendation to include it in your message.';
+    document.getElementById('contact-status').textContent = t('The website brief could not be loaded. Return to the quiz and use Copy recommendation to include it in your message.');
   });
 }

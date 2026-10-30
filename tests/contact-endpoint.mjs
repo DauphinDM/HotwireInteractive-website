@@ -9,7 +9,7 @@ socket.listen(0, '127.0.0.1');
 await once(socket, 'listening');
 const port = socket.address().port;
 await new Promise((done) => socket.close(done));
-const server = spawn(process.env.PHP_BINARY || 'php', ['-S', `127.0.0.1:${port}`, '-t', resolve('public')], { stdio: ['ignore', 'ignore', 'pipe'] });
+const server = spawn(process.env.PHP_BINARY || 'php', ['-S', `127.0.0.1:${port}`, '-t', resolve('public')], { stdio: ['ignore', 'ignore', 'pipe'], env: { ...process.env, HOTWIRE_TRANSLATION_DIR: resolve('src/i18n/messages') } });
 try {
   await Promise.race([
     once(server.stderr, 'data'),
@@ -45,6 +45,10 @@ try {
   assert.ok(native.includes('name="csrf"') && native.includes('Send inquiry'));
   assert.ok(native.includes('href="/privacy/"') && native.includes('href="/terms/"') && native.includes('href="/cookies/"'));
   assert.ok(native.includes('aria-describedby="contact-privacy"'));
+  const french = await (await fetch(url + '?lang=fr')).text();
+  const fr = JSON.parse(await (await import('node:fs/promises')).readFile(resolve('src/i18n/messages/fr.json'), 'utf8'));
+  assert.ok(french.includes('lang="fr"') && french.includes(fr['Your name or studio']));
+  assert.ok(french.includes('name="locale" value="fr"') && french.includes('href="/fr/privacy/"'));
   assert.equal((await fetch(url, { method: 'PUT', headers: { Accept: 'application/json' } })).status, 405);
   console.log('PASS: PHP HTTP endpoint — sessions, CSRF, validation, size limits, escaping, repaired request IDs, rejected uploads, native form, allowed methods. No mail sent.');
 } finally { server.kill(); }

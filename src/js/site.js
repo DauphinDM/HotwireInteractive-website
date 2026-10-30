@@ -1,4 +1,5 @@
 import { animateEntrance, initPageMotion } from './motion.js';
+import { initLanguages, t } from '../i18n/index.js';
 
 function initNavigation() {
   const button = document.getElementById('mobile-menu-btn');
@@ -6,16 +7,17 @@ function initNavigation() {
   const header = document.getElementById('navbar');
   if (!button || !menu || !header) return;
 
-  const desktop = window.matchMedia('(min-width: 1024px)');
+  const desktop = window.matchMedia('(min-width: 1280px)');
   const setOpen = (open, restoreFocus = false) => {
     menu.hidden = !open;
     button.setAttribute('aria-expanded', String(open));
-    button.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    button.setAttribute('aria-label', t(open ? 'Close navigation' : 'Open navigation'));
     if (open) animateEntrance(menu, 0, 180);
     if (restoreFocus) button.focus();
   };
 
   button.addEventListener('click', () => setOpen(menu.hidden));
+  window.addEventListener('hotwire:languagechange', () => button.setAttribute('aria-label', t(menu.hidden ? 'Open navigation' : 'Close navigation')));
   menu.addEventListener('click', (event) => {
     if (event.target.closest('a')) setOpen(false);
   });
@@ -44,6 +46,7 @@ function initNavigation() {
 }
 
 export function initSite() {
+  initLanguages();
   initNavigation();
   initPageMotion();
   document.querySelectorAll('[data-year]').forEach((item) => {

@@ -1,4 +1,6 @@
 import { initSite } from './site.js';
+import { getLocale, t } from '../i18n/index.js';
+import { LANGUAGES } from '../i18n/config.js';
 
 initSite();
 
@@ -11,7 +13,7 @@ const quantities = new Map();
 const cart = document.getElementById('demo-cart-items');
 const status = document.getElementById('demo-cart-status');
 const clear = document.getElementById('demo-cart-clear');
-const money = (cents) => new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR' }).format(cents / 100);
+const money = (cents) => new Intl.NumberFormat(LANGUAGES[getLocale()].intl, { style: 'currency', currency: 'EUR' }).format(cents / 100);
 function renderCart() {
   let total = 0;
   let count = 0;
@@ -20,10 +22,10 @@ function renderCart() {
     total += product.cents * quantity;
     count += quantity;
     const item = document.createElement('li');
-    item.textContent = `${product.name} × ${quantity} — ${money(product.cents * quantity)}`;
+    item.textContent = `${t(product.name)} × ${quantity} — ${money(product.cents * quantity)}`;
     return item;
   }));
-  status.textContent = count ? `${count} demo item${count === 1 ? '' : 's'} — ${money(total)} sample total. No payment or order has been made.` : 'Your demo basket is empty. Nothing is saved or sent.';
+  status.textContent = count ? t('{count} demo item(s) — {price} sample total. No payment or order has been made.', { count, price: money(total) }) : t('Your demo basket is empty. Nothing is saved or sent.');
 }
 if (cart) {
   document.querySelectorAll('[data-add-product]').forEach((button) => {
@@ -38,13 +40,21 @@ if (cart) {
   clear.hidden = false;
   clear.addEventListener('click', () => { quantities.clear(); renderCart(); });
   renderCart();
+  window.addEventListener('hotwire:languagechange', renderCart);
 }
 const booking = document.getElementById('demo-booking-form');
 if (booking) {
   document.getElementById('demo-booking-submit').hidden = false;
+  let previewed = false;
+  function renderBookingPreview() {
+    const session = booking.querySelector('input[name="session"]:checked').parentElement.textContent.trim();
+    const slot = booking.querySelector('input[name="slot"]:checked').parentElement.textContent.trim();
+    document.getElementById('demo-booking-status').textContent = t('Demo selection: {session} — {slot}. This is a preview only; no reservation was made and nothing was sent.', { session, slot });
+  }
   booking.addEventListener('submit', (event) => {
     event.preventDefault();
-    const data = new FormData(booking);
-    document.getElementById('demo-booking-status').textContent = `Demo selection: ${data.get('session')} — ${data.get('slot')}. This is a preview only; no reservation was made and nothing was sent.`;
+    previewed = true;
+    renderBookingPreview();
   });
+  window.addEventListener('hotwire:languagechange', () => { if (previewed) renderBookingPreview(); });
 }

@@ -5,6 +5,9 @@ function check(bool $value, string $label): void { if (!$value) throw new Runtim
 $valid = ['name' => 'Zoë & Studio', 'email' => 'zoe@example.com', 'category' => 'website', 'message' => 'A new site 🎮', 'brief' => '', 'consent' => '1', 'company_url' => '', 'request_id' => str_repeat('a', 32)];
 [$clean] = contact_validate($valid);
 check($clean !== null, 'Unicode inquiry accepted');
+check($clean['locale'] === 'en', 'Existing clients default to English');
+check(contact_validate(array_replace($valid, ['locale' => 'fr']))[0]['locale'] === 'fr', 'French communication preference accepted');
+check(contact_validate(array_replace($valid, ['locale' => 'xx']))[0] === null, 'Reject unsupported language');
 foreach ([['email', "a@example.com\r\nBcc: victim@example.com"], ['name', "Name\nBcc: injected"], ['consent', ''], ['category', 'invalid'], ['company_url', 'spam'], ['message', str_repeat('x', 1501)], ['email', ['bad']], ['brief', str_repeat('x', 12001)]] as [$key, $value]) {
     check(contact_validate(array_replace($valid, [$key => $value]))[0] === null, 'Reject invalid ' . $key);
 }
@@ -18,6 +21,7 @@ check(!contact_deliver($clean, fn() => false), 'Transport rejection is not succe
 $receipts = [$clean['request_id'] => ['at' => 10000, 'hash' => contact_payload_hash($clean)]];
 check(contact_receipt_status($receipts, $clean, 10001) === 'same', 'Identical retry reuses an existing receipt');
 check(contact_receipt_status($receipts, array_replace($clean, ['message' => 'A different inquiry']), 10001) === 'changed', 'Edited retry is not acknowledged as the old inquiry');
+check(contact_receipt_status($receipts, array_replace($clean, ['locale' => 'de']), 10001) === 'changed', 'Language change is not acknowledged as a different payload');
 check(contact_receipt_status($receipts, $clean, 14000) === 'missing', 'Old receipts expire');
 check(contact_receipt_status([$clean['request_id'] => 10000], $clean, 10001) === 'missing', 'Legacy receipt cannot acknowledge unverified content');
 $dir = sys_get_temp_dir() . '/hotwire-backend-test-' . bin2hex(random_bytes(8));

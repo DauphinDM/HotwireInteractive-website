@@ -19,6 +19,9 @@ The `/privacy/`, `/terms/`, and `/cookies/` pages are working drafts matched to 
 
 ## Verified against the implementation
 
+- **Translations:** pages and fixed UI messages are available in English/Dutch/French/German from local catalogues. Drafts were machine-assisted offline; key actions/warnings were curated, but legal/commercial translations are not certified or approved. Review them appropriately. The agreement remains a not-for-signature/payment review copy in every language; registration/VAT details remain deferred.
+- **Language preference:** only an explicit choice writes `hotwire-language` to local storage, holding a locale code until changed or cleared. Browser detection alone does not persist anything. This is disclosed in privacy/storage notices. The inquiry includes a validated communication-language preference; it does not translate the visitor's message or send private data to a translation service. Review the applicable legal treatment of preference storage rather than assuming a blanket exemption.
+
 - Contact recipient: `contact@hotwireinteractive.co.uk`; fixed mail sender: `website@hotwireinteractive.co.uk`.
 - Contact service: PHP, validated personal details/message/brief, consent confirmation, CSRF, a honeypot, rate limits, and duplicate-payload checks. No attachments accepted.
 - Session cookie: `hotwire_contact`, API path `/api/`, session lifetime, HttpOnly, SameSite=Strict, Secure when PHP sees HTTPS. Review HTTPS/proxy configuration on the actual host.

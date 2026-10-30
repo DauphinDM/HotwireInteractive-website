@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { i18nPlugin } from './scripts/i18n-vite-plugin.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -15,7 +16,7 @@ function phpRequiredMiddleware(req, res, next) {
 export default {
   root,
   appType: 'mpa',
-  plugins: [{
+  plugins: [i18nPlugin(root), {
     name: 'php-contact-safety',
     configureServer(server) { server.middlewares.use(phpRequiredMiddleware); },
     configurePreviewServer(server) { server.middlewares.use(phpRequiredMiddleware); },
@@ -27,6 +28,12 @@ export default {
   },
   build: {
     rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const locale = id.replaceAll('\\', '/').match(/\/src\/i18n\/messages\/(en|nl|fr|de)\.json$/)?.[1];
+          if (locale) return `locale-${locale}`;
+        },
+      },
       input: {
         main: resolve(root, 'index.html'),
         websites: resolve(root, 'websites/index.html'),

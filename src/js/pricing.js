@@ -1,3 +1,5 @@
+import { getLocale, localizedObject } from '../i18n/index.js';
+import { LANGUAGES } from '../i18n/config.js';
 // Planning ranges, not binding offers. Keep public package copy in sync.
 export const PRICE_TIERS = [
   { id: 'starter', name: 'Starter', label: 'Affordable', from: 500, to: 1200 },
@@ -6,12 +8,11 @@ export const PRICE_TIERS = [
   { id: 'enterprise', name: 'Enterprise', label: 'Extra high', from: 6500, to: 14000 },
 ];
 
-const euro = new Intl.NumberFormat('en-IE', {
+export const formatEUR = (amount, locale = getLocale()) => new Intl.NumberFormat(LANGUAGES[locale].intl, {
   style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
-});
-export const formatEUR = (amount) => euro.format(amount);
+}).format(amount);
 
-export function estimateWebsite(answers) {
+export function estimateWebsite(answers, locale = getLocale()) {
   let level = 0;
   const drivers = [];
   function minimum(rank, reason) {
@@ -43,10 +44,10 @@ export function estimateWebsite(answers) {
   const budgetMax = { starter: 1200, growth: 3000, scale: 6500, enterprise: Infinity, unsure: Infinity }[answers.budget];
   const budgetWarning = from > budgetMax
     ? 'Your requirements exceed your indicated budget. Reduce scope together or revise the budget; essential features have not been removed.' : '';
-  return {
-    tier, from, to, label: `${formatEUR(from)}–${formatEUR(to)}${level === 3 ? '+' : ''}`,
+  return localizedObject({
+    tier, from, to, label: `${formatEUR(from, locale)}–${formatEUR(to, locale)}${level === 3 ? '+' : ''}`,
     drivers: drivers.length ? drivers : ['A supplied-content template with 1–3 pages keeps the initial scope affordable.'],
     adjustments, budgetWarning,
     caveat: 'Indicative build budget, not a quote or price cap. Tax treatment and the total payable must be confirmed in writing before signing. Hosting, domains, subscriptions, transaction fees, translation, and ongoing maintenance are separate unless quoted.',
-  };
+  }, locale);
 }

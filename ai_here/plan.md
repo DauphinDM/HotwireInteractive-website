@@ -21,7 +21,10 @@ Owner clarification: the company is **not registered yet**; legal details will t
 4. A printable service-agreement **review draft**, with party/scope/schedule/cost/terms fields and safe integer-cent 50/25/25 calculations. Browser Print can save PDF. The persistent warning says not to sign or pay against this draft. No upload/signature/payment API was invented.
 5. Public signing/postal/deposit instructions and a private operational kickoff checklist. Work is contingent on an independently verified signed agreement AND cleared 50% deposit, then written studio confirmation.
 6. Sourced competitor comparison on pricing page; research notes in `pricing-research.md` retain model/scope/VAT/renewal differences.
-7. Existing contact backend/configuration left untouched. Root legacy `contact.php` was not modified; active frontend uses `/api/contact.php`.
+7. Contact sender, recipient, transport configuration, and root legacy `contact.php` remain unchanged. The language follow-up adds validated locale handling and translated native-form rendering to the active `/api/` endpoint; do not redo live email setup.
+8. Pricing and Examples are first-level links, visible mobile shortcuts, and direct homepage actions. A shared build shell keeps these consistent across pages.
+9. English/Dutch/French/German catalogues cover 958 current messages. Localized HTML routes, metadata, internal links, and sitemap/hreflang entries are built automatically from English sources. Browser detection and a visible language switcher work without discarding typed contact/draft fields or quiz progress. Explicit choices persist only as a language code; blocked storage is nonfatal.
+10. Optional offline draft-translation tooling uses locally cached, pinned/hash-checked Argos/OpenNMT models. Builds/hosting have no translation API, Python, model, or paid-service dependency. Read `languages.md` for source maintenance and setup. Visitor input is never translated or uploaded.
 
 ## Boundaries / unresolved requirements
 
@@ -36,7 +39,7 @@ Owner clarification: the company is **not registered yet**; legal details will t
 
 ## Verification
 
-Final verification on 30 October 2026:
+Baseline commercial/native-picker verification on 30 October 2026 (language follow-up below):
 
 - `npm run build` passed (four generated demos plus all public pages).
 - `npm run test:unit`: **15 passed**. Coverage includes every option and 1,000 deterministic mixed combinations, not every one of the 262,440 combinations.
@@ -48,6 +51,19 @@ Final verification on 30 October 2026:
 Native-picker follow-up: owner-provided MDN reference implemented in the shared stylesheet, with capability-gated `appearance: base-select` on both select and picker. A production build, four focused picker tests, and the full **247-test browser suite** passed (including 320px/1440px keyboard selection, open-picker accessibility/viewport checks, standard-select fallback with the enhancement block removed, and forced colors/reduced motion). No PHP, mail transport, or legal-document issuance behaviour was changed by this follow-up.
 
 No commit, push, production deployment, real signature verification, or real payment verification was performed.
+
+## Navigation and language follow-up
+
+- Shared navigation and localized output are implemented in `scripts/i18n-vite-plugin.mjs` and `scripts/i18n-html.mjs`; edit the English source once, not four pages. The browser uses checked-in local dictionaries and maintains state during language changes.
+- The first model download host returned 403 and an online translation endpoint returned 429 from the environment. The final tooling uses an explicitly downloaded, pinned public model mirror and performs translation locally. Neither service is a website/runtime dependency.
+- Initial model output exposed SentencePiece spacing markers in some Dutch/French strings and unknown-token separators in 12 German titles. Existing entries were corrected; catalogue/unit checks now reject `▁`, `�`, `⁇`, and `<unk>`, with explicit negative regression cases. The offline translator protects title separators and rejects unknown-token output before writing a locale catalogue. Core navigation/actions, homepage headings, quiz labels, and draft warnings are curated in `src/i18n/editorial.json`. This is still machine-assisted copy, not certified native/legal review.
+- Parser testing also caught entity-fragmented strings and linkedom's incorrect digit handling in `dataset.i18n` attribute names. Adjacent text nodes now merge before extraction, and marker attributes are set explicitly. Regression checks cover complete entities, marker naming, and actual visible text changes—not just changing `<html lang>`.
+- The mobile disclosure keeps its menu next in keyboard order; always-visible shortcuts come after the menu in DOM order so opening navigation does not send the next Tab into unrelated shortcuts.
+- Final verification on 30 October 2026: production preparation/build and catalogue checks passed; all four catalogues cover 958 source messages with intact placeholders and no flagged tokenizer artifacts. **22 unit tests**, the expanded PHP library/HTTP checks, and the final full **291-test browser suite (2.8 minutes)** passed after copy/placeholder/header cleanup. No real mail was sent. The offline translator's syntax, title protection, and artifact guards also passed a local no-write/no-network probe. All **64 generated HTML documents** have the expected document language and clean titles; **2,460 local asset/form/navigation targets** resolve to generated files. `git diff --check` passed.
+- Reviewed Dutch/French/German phone and desktop screenshots. The final cleanup translates static textarea placeholders without touching private contents, improves fragmented homepage headings, and keeps mobile shortcuts in a two-column row so the longer Dutch labels do not cover the introduction. Browser assertions now check the introduction is below the header and the message placeholder actually changes language.
+- PHP sender/recipient/transport settings remain unchanged. Only a supported locale code is added to validation, receipt hashing, the internal email preference line, and native-form presentation. Existing clients default to English.
+
+Initial translations still need fluent-language review, especially legal/commercial paragraphs. Registration, VAT details, approved final service terms, payments, and signatures remain deferred/manual exactly as before.
 
 ## Next improvements
 
