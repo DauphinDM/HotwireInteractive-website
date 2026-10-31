@@ -12,6 +12,8 @@
     "test": "playwright test",
     "test:unit": "node --test tests/email-draft.test.js tests/website-recommendation.test.js tests/pricing.test.js tests/i18n.test.js",
     "test:php": "node scripts/test-php.mjs",
+    "test:emails": "node tests/email-layout.mjs",
+    "preview:emails": "node scripts/preview-emails.mjs",
     "test:browser:install": "playwright install chromium",
     "i18n:sync": "node scripts/i18n.mjs sync",
     "i18n:check": "node scripts/i18n.mjs check",

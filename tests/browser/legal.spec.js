@@ -15,7 +15,12 @@ for (const path of pages) {
 for (const path of ['/privacy/', '/terms/', '/cookies/']) {
   test(`${path} has working contents links and an updated date`, async ({ page }) => {
     await page.goto(path);
-    await expect(page.locator('time')).toHaveAttribute('datetime', '2026-10-30');
+    await expect(page.locator('time')).toHaveAttribute('datetime', path === '/privacy/' ? '2026-10-31' : '2026-10-30');
+    if (path === '/privacy/') {
+      await expect(page.locator('main')).toContainText('transactional confirmation');
+      await expect(page.locator('main')).toContainText('keyed hashes');
+      await expect(page.locator('main')).toContainText('24 hours');
+    }
     const toc = page.getByRole('navigation', { name: 'On this page' });
     const anchors = await toc.locator('a').evaluateAll((links) => links.map((link) => link.hash));
     for (const hash of anchors) {

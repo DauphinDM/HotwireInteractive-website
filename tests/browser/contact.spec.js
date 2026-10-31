@@ -30,7 +30,7 @@ test('a server-accepted inquiry keeps fields and prevents duplicate submits', as
     if (route.request().method() === 'GET') return route.fulfill({ json: { csrf: 'test-token', request_id: 'a'.repeat(32) } });
     sends += 1;
     expect(route.request().postData()).toContain('zoe@example.com');
-    return route.fulfill({ json: { ok: true } });
+    return route.fulfill({ json: { ok: true, confirmation: 'accepted' } });
   });
   await fillDraft(page);
   await page.getByRole('button', { name: 'Send inquiry' }).click();
@@ -38,9 +38,44 @@ test('a server-accepted inquiry keeps fields and prevents duplicate submits', as
   await expect(page.getByLabel('Your name or studio')).toHaveValue('Zoë & Studio');
   await expect(page.getByLabel('Your message', { exact: true })).toHaveValue('Hello! An idea with 50% more sparks & games. 🎮');
   await expect(page.getByRole('status')).toContainText('accepted by our mail server');
+  await expect(page.getByRole('status')).toContainText('confirmation email has also been accepted for delivery');
   expect(sends).toBe(1);
   await page.getByLabel('Your message', { exact: true }).fill('A new inquiry');
   await expect(page.getByRole('button', { name: 'Send inquiry' })).toBeEnabled();
+});
+
+for (const [confirmation, text] of [
+  ['unavailable', 'A confirmation email may not arrive'],
+  ['suppressed', 'No additional confirmation email was sent'],
+  ['constructor', 'We’ll reply to your email address.'],
+]) {
+  test(`confirmation ${confirmation} keeps studio success and prevents a duplicate inquiry`, async ({ page }) => {
+    await page.route('**/api/contact.php', (route) => route.fulfill(route.request().method() === 'GET'
+      ? { json: { csrf: 'test-token', request_id: 'a'.repeat(32) } }
+      : { json: { ok: true, confirmation } }));
+    await fillDraft(page);
+    await page.getByRole('button', { name: 'Send inquiry' }).click();
+    await expect(page.getByRole('status')).toContainText(text);
+    await expect(page.getByRole('status')).toHaveAttribute('data-state', 'success');
+    await expect(page.getByRole('button', { name: 'Inquiry sent' })).toBeDisabled();
+    await expect(page.getByLabel('Email address', { exact: true })).toHaveValue('zoe@example.com');
+    if (confirmation !== 'constructor') await expect(page.getByRole('status')).toContainText('do not need to send your inquiry again');
+  });
+}
+
+test('confirmation feedback changes language without losing accepted state or private fields', async ({ page }) => {
+  await page.route('**/api/contact.php', (route) => route.fulfill(route.request().method() === 'GET'
+    ? { json: { csrf: 'test-token', request_id: 'a'.repeat(32) } }
+    : { json: { ok: true, confirmation: 'unavailable' } }));
+  await fillDraft(page);
+  await page.getByRole('button', { name: 'Send inquiry' }).click();
+  await expect(page.getByRole('status')).toContainText('A confirmation email may not arrive');
+  await page.locator('.language-menu summary').click();
+  await page.locator('[data-language-choice="nl"]').first().click();
+  await expect(page.getByRole('status')).toContainText('bevestigingsmail');
+  await expect(page.getByRole('status')).toContainText('Je gegevens blijven');
+  await expect(page.locator('#contact-submit')).toBeDisabled();
+  await expect(page.locator('#email')).toHaveValue('zoe@example.com');
 });
 
 for (const status of [403, 409, 422, 429, 503]) {
@@ -65,7 +100,7 @@ test('a non-PHP/static server produces a useful failure rather than a false succ
 });
 
 test('the actual Vite preview refuses API requests without exposing PHP source', async ({ request }) => {
-  for (const path of ['/api/contact.php', '/api/contact-lib.php']) {
+  for (const path of ['/api/contact.php', '/api/contact-lib.php', '/api/contact-mail.php', '/api/contact-handler.php']) {
     const response = await request.get(path);
     expect(response.status()).toBe(503);
     expect(response.headers()['content-type']).toContain('application/json');

@@ -23,6 +23,7 @@ npm run preview
 npm run test:browser:install
 npm run test:unit
 npm run test:php    # Requires PHP 8.2+; no real email is sent
+npm run test:emails # PHP + Chromium: email layouts/accessibility, no mail sent
 npm test
 ```
 
@@ -49,6 +50,9 @@ To test with an installed Chrome or Edge browser instead of downloading Chromium
 - `scripts/i18n-vite-plugin.mjs` — shared header enhancement, static translated routes, metadata, and sitemap generation
 - `scripts/i18n.mjs` — extraction, translation checks, and optional offline draft generation
 - `src/js/contact.js` — secure inquiry submission, local draft composition, and copy fallback
+- `public/api/contact.php` — production entrypoint using the existing PHP `mail()` transport
+- `public/api/contact-handler.php`, `contact-lib.php` — secure form, receipts, delivery orchestration, and abuse limits
+- `public/api/contact-mail.php` — shared HTML/plain-text email layouts and MIME encoding
 - `src/js/website-quiz.js` — accessible quiz state, navigation, and contact hand-off
 - `src/js/websites.js` — services-page initialization
 - `src/js/quiz-handoff.js` — one-use, same-tab transfer of quiz answers to the contact composer
@@ -69,6 +73,23 @@ At `/websites/#website-quiz`, visitors answer ten questions: goal, page count, e
 The finder is deterministic and runs entirely in the browser. It needs no API key, email address, or sign-up. Answers are held in memory until the visitor chooses “Discuss this website”. That action transfers only allowlisted answer fields and an optional design ID through same-tab session storage, consumed once on the homepage. Transfers older than ten minutes are rejected. Contact details are never written to browser storage. Blocked storage exposes a copyable description. Removing the brief preserves typed contact details and message text.
 
 Edit questions and recommendation copy in `src/js/website-recommendation.js` and ranges/rules in `src/js/pricing.js`; keep the static pricing page and gallery labels aligned. Native radios remain visible and keyboard-operable. The owner's “pickercss” reference is native CSS [`::picker(select)`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::picker), not an external dependency. The shared stylesheet imports `src/css/pickers.css`, which enables `appearance: base-select` on single-value `.form-control` selects and their pickers only inside a feature query. Unsupported browsers retain a normal select. The quiz's radios are deliberately not replaced; the standalone PHP fallback also retains its native controls. No picker library, polyfill, or new JavaScript control is required.
+
+## HTML inquiry emails
+
+Accepted inquiries generate a clean, branded **HTML studio notification** and then a matching **HTML client confirmation**, each with a UTF-8 plain-text fallback. Staff notifications remain English and show the visitor’s preferred reply language. Confirmations follow the submitted English/Dutch/French/German preference and use an independent server-generated inquiry reference.
+
+The sender address, studio recipient, and PHP `mail()` setup are unchanged. Replies to studio notifications go to the visitor; replies to confirmations go to the studio. Confirmations deliberately omit submitted names, messages, and project briefs because the supplied address is not verified. They are transactional, not marketing, and do not confirm a booking, contract, payment, or kickoff. Email HTML uses inline styles, conservative tables, and system fonts—no tracking, remote images, or external fonts.
+
+Studio acceptance is recorded before attempting the secondary email. An unavailable or abuse-limited confirmation does **not** turn an accepted inquiry into a failed submission. Same-session, same-payload retries reuse the receipt and never resend either email. The usual inquiry limits remain; separate recipient/global limits bound confirmation abuse. Mail-server acceptance is not proof of inbox delivery. See `ai_here/email.md` for limits, failure/crash boundaries, research, and live-host checks.
+
+```sh
+# Requires PHP 8.2+ on PATH, or PHP_BINARY set to its executable.
+npm run preview:emails -- PRIVATE_OUTPUT_DIRECTORY
+npm run test:php
+npm run test:emails
+```
+
+Previews contain fictional data only. Keep them outside `src/`, `public/`, and `dist/`. `test:emails` saves phone/desktop screenshots under ignored `test-results/emails/`; Chromium checks cannot certify rendering in actual Outlook/Gmail/Apple Mail inboxes. No real email is sent by these tests or preview commands.
 
 ## Examples, pricing, and agreements
 
@@ -103,7 +124,7 @@ npm run i18n:check
 npm run build
 ```
 
-The revised copy uses whole-message Google Translate drafts, LLM editorial/meaning review in all three languages, and LanguageTool checks—not the old sentence-fragment stitching. Dutch uses je/jouw; French vous/votre; German Sie/Ihr. `src/i18n/editorial.json` holds 563 curated messages. Build checks protect prices, percentages, names, placeholders, register, and curated wording. Grammar reports are cached for targeted rechecks; no suggestions are applied automatically. The public endpoints are opt-in maintenance aids, not guaranteed services or visitor-time dependencies.
+The revised copy uses whole-message Google Translate drafts, LLM editorial/meaning review in all three languages, and LanguageTool checks—not the old sentence-fragment stitching. Dutch uses je/jouw; French vous/votre; German Sie/Ihr. The HTML-email follow-up adds manually curated copy; `src/i18n/editorial.json` now holds 587 curated messages across 981 source messages. Build checks protect prices, percentages, names, placeholders, register, and curated wording. Grammar reports are cached for targeted rechecks; no suggestions are applied automatically. The public endpoints are opt-in maintenance aids, not guaranteed services or visitor-time dependencies.
 
 An optional offline fallback still uses the isolated Python environment in `scripts/requirements-i18n.txt`, selected by `HOTWIRE_I18N_PYTHON`: `node scripts/i18n.mjs translate --model-dir PATH_TO_MODELS --output CANDIDATES.json --download-models`. It now translates whole messages and writes only private draft candidates, never publishable catalogue values. Ordinary builds/hosting need no models, Python, API keys, paid service, or translation requests. Setup, review steps, and adding languages: `ai_here/languages.md`; quality evidence: `ai_here/translation-review.md`.
 

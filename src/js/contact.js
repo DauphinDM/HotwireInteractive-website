@@ -1,5 +1,10 @@
 import { getLocale, t } from '../i18n/index.js';
 const STUDIO_EMAIL = 'contact@hotwireinteractive.co.uk';
+const confirmationMessages = {
+  accepted: 'Your inquiry has been accepted by our mail server. A confirmation email has also been accepted for delivery to your address.',
+  unavailable: 'Your inquiry has been accepted by our mail server. A confirmation email may not arrive, but you do not need to send your inquiry again.',
+  suppressed: 'Your inquiry has been accepted by our mail server. No additional confirmation email was sent for this address. You do not need to send your inquiry again.',
+};
 
 export function createEmailDraft({ name, email, category, message, brief = '' }) {
   const sender = name.trim().replace(/[\r\n]+/g, ' ');
@@ -50,10 +55,10 @@ export function initContactForm() {
     if (requestId) requestId.value = '';
   };
 
-  let lastStatus = '';
+  let lastStatus = [];
   const setStatus = (text, state = '') => {
-    lastStatus = text;
-    status.textContent = t(text);
+    lastStatus = Array.isArray(text) ? text : [text];
+    status.textContent = lastStatus.map((source) => t(source)).join(' ');
     status.dataset.state = state;
   };
 
@@ -135,7 +140,10 @@ export function initContactForm() {
         return;
       }
       sent = true;
-      setStatus('Your inquiry has been accepted by our mail server. We’ll reply to your email address. Your details are still here for reference.', 'success');
+      setStatus([
+        Object.hasOwn(confirmationMessages, data.confirmation) ? confirmationMessages[data.confirmation] : 'Your inquiry has been accepted by our mail server. We’ll reply to your email address.',
+        'Your details are still here for reference.',
+      ], 'success');
     } catch {
       setStatus('We could not confirm that your inquiry was sent. Your information is still here. You can retry, copy your message, or email us directly.', 'error');
     } finally {
@@ -187,7 +195,7 @@ export function initContactForm() {
     localeInput.value = getLocale();
     document.getElementById('message-label').textContent = t(websiteBrief ? 'Your message (optional)' : 'Your message');
     submit.textContent = t(busy ? 'Sending…' : sent ? 'Inquiry sent' : 'Send inquiry');
-    if (status.textContent && lastStatus) status.textContent = t(lastStatus);
+    if (status.textContent && lastStatus.length) status.textContent = lastStatus.map((source) => t(source)).join(' ');
   });
 
   return {

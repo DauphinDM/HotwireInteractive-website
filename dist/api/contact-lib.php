@@ -8,6 +8,13 @@ const HOTWIRE_CATEGORIES = [
     'collaboration' => 'Creative collaboration', 'other' => 'General inquiry',
 ];
 const HOTWIRE_LANGUAGES = ['en' => 'English', 'nl' => 'Nederlands', 'fr' => 'Français', 'de' => 'Deutsch'];
+const HOTWIRE_CONFIRMATION_MESSAGES = [
+    'accepted' => 'Your inquiry has been accepted by our mail server. A confirmation email has also been accepted for delivery to your address.',
+    'unavailable' => 'Your inquiry has been accepted by our mail server. A confirmation email may not arrive, but you do not need to send your inquiry again.',
+    'suppressed' => 'Your inquiry has been accepted by our mail server. No additional confirmation email was sent for this address. You do not need to send your inquiry again.',
+];
+
+require_once __DIR__ . '/contact-mail.php';
 
 function contact_locale($value): string
 {
@@ -99,18 +106,88 @@ function contact_receipt_status(array $receipts, array $data, int $now): string
     return hash_equals($receipt['hash'], contact_payload_hash($data)) ? 'same' : 'changed';
 }
 
-function contact_deliver(array $data, callable $transport): bool
+// Reserve before attempting an automatic confirmation, even if transport later
+// rejects it. HMACs use a private random key, not guessable plain email hashes.
+// No recipient addresses, names, or messages are written to this shared file.
+function contact_reserve_confirmation(string $directory, string $email, int $now): bool
 {
-    $body = "Name / studio: {$data['name']}\r\nEmail: {$data['email']}\r\nInquiry type: " . HOTWIRE_CATEGORIES[$data['category']] . "\r\n\r\n" . $data['message'];
-    $body .= "\r\n\r\nPreferred language: " . HOTWIRE_LANGUAGES[contact_locale($data['locale'] ?? 'en')];
-    if ($data['brief'] !== '') $body .= "\r\n\r\nWebsite quiz brief:\r\n" . $data['brief'];
-    $body .= "\r\n\r\nThe visitor agreed to the use of their details to respond to this inquiry.";
-    $headers = [
-        'From' => 'Hotwire website <' . HOTWIRE_FROM . '>',
-        'Reply-To' => $data['email'],
-        'MIME-Version' => '1.0',
-        'Content-Type' => 'text/plain; charset=UTF-8',
-        'Content-Transfer-Encoding' => 'quoted-printable',
-    ];
-    return $transport(HOTWIRE_TO, 'Hotwire inquiry: ' . HOTWIRE_CATEGORIES[$data['category']], quoted_printable_encode($body), $headers);
+    $email = strtolower($email);
+    $local = explode('@', $email)[0];
+    if (in_array($email, [strtolower(HOTWIRE_FROM), strtolower(HOTWIRE_TO)], true)
+        || preg_match('/^(?:mailer-daemon|postmaster|no-reply|noreply|do-not-reply|donotreply|bounces?)(?:[+._-].*)?$/D', $local)) return false;
+    if (!is_dir($directory) && !@mkdir($directory, 0700, true) && !is_dir($directory)) throw new RuntimeException('Confirmation storage unavailable');
+    $handle = @fopen($directory . '/confirmations.json', 'c+');
+    if (!$handle) throw new RuntimeException('Confirmation storage unavailable');
+    try {
+        if (!flock($handle, LOCK_EX)) throw new RuntimeException('Confirmation storage unavailable');
+        $raw = stream_get_contents($handle);
+        $state = $raw === '' ? ['secret' => bin2hex(random_bytes(32)), 'recipients' => []] : json_decode($raw, true, 32, JSON_THROW_ON_ERROR);
+        if (!is_array($state) || !is_string($state['secret'] ?? null) || !preg_match('/^[a-f0-9]{64}$/D', $state['secret']) || !is_array($state['recipients'] ?? null)) throw new RuntimeException('Confirmation storage invalid');
+        foreach ($state['recipients'] as $key => $times) {
+            $state['recipients'][$key] = is_array($times) ? array_values(array_filter($times, fn($time) => is_int($time) && $time > $now - 86400)) : [];
+            if (!$state['recipients'][$key]) unset($state['recipients'][$key]);
+        }
+        $key = hash_hmac('sha256', $email, $state['secret']);
+        $times = $state['recipients'][$key] ?? [];
+        $daily = array_sum(array_map('count', $state['recipients']));
+        $hourly = array_sum(array_map(fn($items) => count(array_filter($items, fn($time) => $time > $now - 3600)), $state['recipients']));
+        $allowed = !array_filter($times, fn($time) => $time > $now - 900) && count($times) < 3 && $hourly < 50 && $daily < 200;
+        if ($allowed) $state['recipients'][$key][] = $now;
+        // Save pruning even when a reservation is refused. Idle files contain
+        // expired timestamps until the next request or a host cleanup job.
+        $encoded = json_encode($state, JSON_THROW_ON_ERROR);
+        rewind($handle);
+        if (!ftruncate($handle, 0) || fwrite($handle, $encoded) !== strlen($encoded) || !fflush($handle)) throw new RuntimeException('Confirmation storage unavailable');
+        return $allowed;
+    } finally {
+        flock($handle, LOCK_UN);
+        fclose($handle);
+    }
+}
+
+function contact_confirmation_result(string $state): array
+{
+    $state = isset(HOTWIRE_CONFIRMATION_MESSAGES[$state]) ? $state : 'unavailable';
+    return ['status' => 200, 'ok' => true, 'message' => HOTWIRE_CONFIRMATION_MESSAGES[$state], 'confirmation' => $state];
+}
+
+// One orchestration path for both native and JavaScript forms. The checkpoint
+// durably records studio acceptance BEFORE attempting the secondary email.
+function contact_submit(array $data, array &$receipts, string $directory, string $client, int $now, callable $transport, ?callable $checkpoint = null): array
+{
+    $receipts = array_filter($receipts, fn($receipt) => is_array($receipt) && is_int($receipt['at'] ?? null) && $receipt['at'] > $now - 3600);
+    $status = contact_receipt_status($receipts, $data, $now);
+    if ($status === 'same') return contact_confirmation_result($receipts[$data['request_id']]['confirmation'] ?? 'unavailable');
+    if ($status === 'changed') return ['status' => 409, 'ok' => false, 'message' => 'This form was already sent with different contents. Please reload the form before sending a new inquiry.'];
+    if (!contact_rate_limit($directory, $client, $now)) return ['status' => 429, 'ok' => false, 'message' => 'Too many inquiries have been sent recently. Please wait 15 minutes or email the studio directly.'];
+    $reference = strtoupper(bin2hex(random_bytes(6)));
+    $receipt = ['at' => $now, 'hash' => contact_payload_hash($data), 'reference' => $reference, 'confirmation' => 'unavailable'];
+    if (!contact_deliver($data, $transport, $reference)) return ['status' => 503, 'ok' => false, 'message' => 'The mail server could not accept your inquiry. Please try again later or email us directly.'];
+    $receipts[$data['request_id']] = $receipt;
+    try {
+        if ($checkpoint) $checkpoint($data['request_id'], $receipt);
+    } catch (Throwable $error) {
+        error_log('Hotwire contact: inquiry accepted; receipt persistence unavailable.');
+        return contact_confirmation_result('unavailable');
+    }
+    // All secondary failures remain successful inquiries. Never retry either
+    // email on a receipt replay, including when confirmation delivery is unknown.
+    try {
+        $state = contact_reserve_confirmation($directory, $data['email'], $now)
+            ? (contact_deliver_confirmation($data, $transport, $reference) ? 'accepted' : 'unavailable')
+            : 'suppressed';
+    } catch (Throwable $error) {
+        $state = 'unavailable';
+    }
+    if ($state === 'unavailable') error_log('Hotwire contact: inquiry accepted; confirmation unavailable.');
+    $receipt['confirmation'] = $state;
+    $receipts[$data['request_id']] = $receipt;
+    try {
+        if ($checkpoint) $checkpoint($data['request_id'], $receipt);
+    } catch (Throwable $error) {
+        // The first checkpoint already records acceptance; a replay may report
+        // an unknown confirmation rather than falsely guaranteeing delivery.
+        error_log('Hotwire contact: confirmation status could not be stored.');
+    }
+    return contact_confirmation_result($state);
 }

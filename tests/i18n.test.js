@@ -6,7 +6,7 @@ import { t } from '../src/i18n/index.js';
 import { recommendWebsite } from '../src/js/website-recommendation.js';
 import { collectHtmlMessages, enhanceShell, localizeHtml } from '../scripts/i18n-html.mjs';
 import { parseHTML } from 'linkedom';
-import { isValidTranslation } from '../scripts/i18n.mjs';
+import { isValidTranslation, sourceMessages } from '../scripts/i18n.mjs';
 import { numberTokens, translationIssues } from '../src/i18n/quality.js';
 import { prepareCatalogues, digest, batches } from '../scripts/review-translations.mjs';
 
@@ -51,6 +51,12 @@ test('catalogue validation rejects unknown tokens, broken placeholders, and empt
   for (const value of ['Hallo ▁{name}', 'Hallo �{name}', 'Hallo ⁇{name}', 'Hallo <unk>{name}', 'Hallo <UNK>{name}', 'Hallo {other}', '', '   ', null]) {
     assert.equal(isValidTranslation('Hello {name}', value), false, String(value));
   }
+});
+
+test('email copy is extracted deliberately without collecting template markup or MIME syntax', async () => {
+  const messages = await sourceMessages();
+  for (const key of ['Thanks for getting in touch.', 'Inquiry confirmation', 'What happens next', 'This confirms an inquiry only, not a booking, agreement, or payment.']) assert.ok(messages.includes(key), key);
+  assert.ok(!messages.some((key) => /email-pad|mso-table|padding:|multipart\/alternative|quoted-printable/.test(key)));
 });
 
 test('fidelity checks preserve prices, percentages, names, and deliberate language register', () => {

@@ -14,10 +14,10 @@ foreach ([['email', "a@example.com\r\nBcc: victim@example.com"], ['name', "Name\
 check(contact_validate(array_replace($valid, ['message' => '', 'brief' => 'Automatically generated project brief']))[0] !== null, 'Quiz brief needs no additional message');
 check(contact_validate(array_replace($valid, ['message' => '']))[0] === null, 'Empty inquiry rejected');
 $captured = [];
-check(contact_deliver($clean, function (...$args) use (&$captured) { $captured = $args; return true; }), 'Transport acceptance returned');
+check(contact_deliver($clean, function (...$args) use (&$captured) { $captured = $args; return true; }, 'A1B2C3D4E5F6'), 'Transport acceptance returned');
 check($captured[0] === HOTWIRE_TO && $captured[3]['From'] === 'Hotwire website <' . HOTWIRE_FROM . '>', 'Recipient and sender cannot be supplied by visitor');
 check($captured[3]['Reply-To'] === $valid['email'] && str_contains(quoted_printable_decode($captured[2]), '🎮'), 'Safe reply-to and UTF-8 content');
-check(!contact_deliver($clean, fn() => false), 'Transport rejection is not success');
+check(!contact_deliver($clean, fn() => false, 'A1B2C3D4E5F6'), 'Transport rejection is not success');
 $receipts = [$clean['request_id'] => ['at' => 10000, 'hash' => contact_payload_hash($clean)]];
 check(contact_receipt_status($receipts, $clean, 10001) === 'same', 'Identical retry reuses an existing receipt');
 check(contact_receipt_status($receipts, array_replace($clean, ['message' => 'A different inquiry']), 10001) === 'changed', 'Edited retry is not acknowledged as the old inquiry');

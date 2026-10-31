@@ -40,13 +40,17 @@ export async function sourceMessages() {
     visit(ast);
   }
   // PHP's fixed validation/response strings also use the same public catalogues.
-  for (const file of ['public/api/contact.php', 'public/api/contact-lib.php']) {
+  for (const file of ['public/api/contact-handler.php', 'public/api/contact-lib.php']) {
     const source = await readFile(resolve(root, file), 'utf8');
     for (const match of source.matchAll(/'((?:[^'\\]|\\.)*)'/g)) {
       const key = match[1].replace(/\\'/g, "'");
       if (isTranslatable(key) && /\s/.test(key) && !/[<>={};]|\\[rnt]/.test(key)) messages.add(key);
     }
   }
+  // Email templates contain substantial HTML/CSS. Extract only explicit copy
+  // calls, not arbitrary quoted attributes, MIME headers, or style declarations.
+  const emailSource = await readFile(resolve(root, 'public/api/contact-mail.php'), 'utf8');
+  for (const match of emailSource.matchAll(/\$t\(\s*'((?:[^'\\]|\\.)*)'/g)) messages.add(match[1].replace(/\\'/g, "'"));
   return [...messages].sort((a, b) => a.localeCompare(b, 'en'));
 }
 

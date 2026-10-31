@@ -4,7 +4,12 @@ const php = process.env.PHP_BINARY || 'php';
 const commands = [
   [php, ['-l', 'public/api/contact.php']],
   [php, ['-l', 'public/api/contact-lib.php']],
+  [php, ['-l', 'public/api/contact-mail.php']],
+  [php, ['-l', 'public/api/contact-handler.php']],
+  [php, ['-l', 'tests/contact-router.php']],
+  [php, ['-l', 'tests/render-mail-previews.php']],
   [php, ['tests/contact-backend.php']],
+  [php, ['tests/contact-mail.php']],
   [process.execPath, ['tests/contact-endpoint.mjs']],
 ];
 
