@@ -9,7 +9,7 @@ import { isTranslatable } from '../src/i18n/protected.js';
 import { translationIssues } from '../src/i18n/quality.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-export const pageFiles = ['index.html', 'websites/index.html', 'websites/pricing/index.html', 'websites/examples/index.html', 'websites/agreement/index.html',
+export const pageFiles = ['index.html', 'studio/index.html', 'contact/index.html', 'projects/index.html', 'websites/index.html', 'websites/pricing/index.html', 'websites/examples/index.html', 'websites/agreement/index.html',
   ...['local', 'portfolio', 'shop', 'booking'].map((id) => `websites/examples/${id}/index.html`),
   'team/index.html', 'team/dauphindm/index.html', 'team/liamvl/index.html', 'privacy/index.html', 'terms/index.html', 'cookies/index.html', '404.html'];
 const dynamicFiles = ['website-recommendation', 'website-quiz', 'pricing', 'contact', 'main', 'templates', 'agreement', 'demo', 'site'].map((name) => `src/js/${name}.js`);

@@ -2,7 +2,7 @@
 export const PROTECTED_TERMS = [
   'Hotwire Interactive', 'Dauphin de Moulin', 'Liam van Looveren',
   'Fieldwork', 'Forma', 'Objects', 'Still', 'Starter', 'Growth', 'Scale',
-  'Enterprise', 'Webhero', 'JouwWeb', 'Google Fonts', 'HttpOnly', 'SameSite=Strict', 'Secure',
+  'Enterprise', 'Webhero', 'JouwWeb', 'Google Fonts', 'Barlow Condensed', 'Manrope', 'HttpOnly', 'SameSite=Strict', 'Secure',
 ];
 
 // These labels genuinely have the same spelling in the source and target.
@@ -13,11 +13,11 @@ const technical = ['Allow: GET, POST', 'Cache-Control: no-store',
   'Referrer-Policy: same-origin', 'Retry-After: 900',
   'X-Content-Type-Options: nosniff', 'X-Frame-Options: DENY'];
 export const UNCHANGED_MESSAGES = {
-  nl: new Set([...technical, 'Contact', 'Escape', 'Google Fonts:', 'Privacy',
+  nl: new Set([...technical, 'Contact', 'Contact | Hotwire Interactive', 'Studio | Hotwire Interactive', 'Escape', 'Google Fonts:', 'Privacy',
     'Privacy | Hotwire Interactive', 'Studio', 'Team', 'Team | Hotwire Interactive',
     'Type', 'Webhero · webshop', 'Websites', 'Websites | Hotwire Interactive']),
-  fr: new Set([...technical, 'Contact', 'Flexible', 'Portfolios', 'Studio', 'Type']),
-  de: new Set([...technical, 'Escape', 'Google Fonts:', 'Name', 'Portfolios',
+  fr: new Set([...technical, 'Contact', 'Contact | Hotwire Interactive', 'Studio | Hotwire Interactive', 'Flexible', 'Portfolios', 'Studio', 'Type']),
+  de: new Set([...technical, 'Studio | Hotwire Interactive', 'Escape', 'Google Fonts:', 'Name', 'Portfolios',
     'Studio', 'Team', 'Team | Hotwire Interactive', 'Websites', 'Websites | Hotwire Interactive']),
 };
 

@@ -36,6 +36,9 @@ export default {
       },
       input: {
         main: resolve(root, 'index.html'),
+        studio: resolve(root, 'studio/index.html'),
+        contact: resolve(root, 'contact/index.html'),
+        projects: resolve(root, 'projects/index.html'),
         websites: resolve(root, 'websites/index.html'),
         pricing: resolve(root, 'websites/pricing/index.html'),
         examples: resolve(root, 'websites/examples/index.html'),

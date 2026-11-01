@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const pages = ['/', '/websites/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
+const pages = ['/', '/studio/', '/contact/', '/projects/', '/websites/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
 
 for (const path of pages) {
   test(`${path} provides all three legal links`, async ({ page }) => {
@@ -15,7 +15,7 @@ for (const path of pages) {
 for (const path of ['/privacy/', '/terms/', '/cookies/']) {
   test(`${path} has working contents links and an updated date`, async ({ page }) => {
     await page.goto(path);
-    await expect(page.locator('time')).toHaveAttribute('datetime', path === '/privacy/' ? '2026-10-31' : '2026-10-30');
+    await expect(page.locator('time')).toHaveAttribute('datetime', path === '/privacy/' ? '2026-11-01' : '2026-10-30');
     if (path === '/privacy/') {
       await expect(page.locator('main')).toContainText('transactional confirmation');
       await expect(page.locator('main')).toContainText('keyed hashes');

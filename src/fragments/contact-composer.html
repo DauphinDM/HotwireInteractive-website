@@ -1,0 +1,28 @@
+<div class="contact-card">
+  <h3 class="font-display text-3xl font-bold mb-2">Write to Hotwire</h3>
+  <p id="contact-help" class="form-hint mb-6" hidden>We’ll send your inquiry securely to the studio. Your name, email, and consent are required.</p>
+  <p id="composer-fallback" class="text-industrial-200 leading-relaxed">You can <a class="contact-email" href="/api/contact.php">open the secure contact form</a> without JavaScript, or <a class="contact-email" href="mailto:contact@hotwireinteractive.co.uk">email the studio directly</a>.</p>
+  <form id="studio-contact-form" class="space-y-5" action="/api/contact.php" method="post" aria-describedby="contact-help" hidden>
+    <input type="hidden" name="csrf" id="contact-csrf" />
+    <input type="hidden" name="brief" id="contact-brief" />
+    <div class="contact-honeypot" aria-hidden="true"><label for="company-url">Leave this field empty</label><input id="company-url" name="company_url" tabindex="-1" autocomplete="off" /></div>
+    <section id="contact-quiz-brief" class="contact-quiz-brief" aria-labelledby="contact-quiz-title" hidden>
+      <h4 id="contact-quiz-title">Your project brief is ready</h4>
+      <details><summary>Review the attached brief</summary><p id="contact-quiz-text"></p></details>
+      <button id="remove-quiz-brief" type="button" class="quiet-button">Remove recommendation</button>
+    </section>
+    <div class="form-grid">
+      <div class="form-field"><label for="name">Your name or studio</label><input id="name" name="name" class="form-control" autocomplete="name" maxlength="100" required placeholder="Name or organisation" /></div>
+      <div class="form-field"><label for="email">Email address</label><input id="email" name="email" type="email" class="form-control" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required placeholder="you@example.com" /></div>
+    </div>
+    <div class="form-field"><label for="category">Inquiry type</label><select id="category" name="category" class="form-control" required><option value="website">Website project</option><option value="studio">Studio inquiry</option><option value="press">Press &amp; media</option><option value="collaboration">Creative collaboration</option><option value="other">General inquiry</option></select></div>
+    <div class="form-field"><label id="message-label" for="message">Your message</label><textarea id="message" name="message" class="form-control" rows="5" maxlength="1500" required aria-describedby="message-help" placeholder="Tell us what you have in mind…"></textarea><p id="message-help" class="form-hint mt-2">Up to 1,500 characters. With a quiz brief attached, extra notes are optional.</p></div>
+    <p id="contact-privacy" class="form-hint">Read our <a href="/privacy/">Privacy notice</a> for how we handle your inquiry. Our <a href="/terms/">Terms of Use</a> cover this website, not a contract for paid work.</p>
+    <label class="contact-consent"><input type="checkbox" name="consent" value="1" required aria-describedby="contact-privacy" /><span>I agree to Hotwire using my details and message to respond to this inquiry.</span></label>
+    <div class="form-actions"><button id="contact-submit" type="submit" class="brutal-btn-primary">Send inquiry</button><button id="copy-message" type="button" class="brutal-btn-secondary">Copy message</button></div>
+    <p class="form-hint">Your information is sent to our server and emailed to the studio only when you choose Send inquiry. It is not used for marketing.</p>
+    <p class="form-hint">After acceptance, we’ll also try to email you a confirmation. It will not include your message or project brief. Delivery and response times are not guaranteed.</p>
+  </form>
+  <p id="contact-status" class="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <details id="draft-preview" class="draft-preview" hidden><summary>View your email draft</summary><label for="draft-text" class="draft-label mt-3">Copyable email draft</label><textarea id="draft-text" class="form-control" rows="8" readonly></textarea></details>
+</div>

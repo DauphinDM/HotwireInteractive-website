@@ -34,6 +34,8 @@ To test with an installed Chrome or Edge browser instead of downloading Chromium
 ## Structure
 
 - `index.html` — hero, studio introduction, and contact composer
+- `studio/index.html`, `contact/index.html`, `projects/index.html` — dedicated studio, inquiry, and project destinations
+- `src/fragments/contact-composer.html` — one English form reused by the homepage and contact page at build time
 - `websites/index.html` — website services and the website-fit quiz
 - `websites/pricing/index.html` — package tiers from €500
 - `websites/examples/index.html` — template gallery
@@ -91,9 +93,13 @@ npm run test:emails
 
 Previews contain fictional data only. Keep them outside `src/`, `public/`, and `dist/`. `test:emails` saves phone/desktop screenshots under ignored `test-results/emails/`; Chromium checks cannot certify rendering in actual Outlook/Gmail/Apple Mail inboxes. No real email is sent by these tests or preview commands.
 
-## Examples, pricing, and agreements
+## Projects, design studies, pricing, and agreements
 
-Four original fictional demos can be opened and selected. Their shop basket and booking slots are memory-only simulations, not payment or reservation services. Edit demo content in `scripts/render-examples.mjs`, then build; do not hand-edit generated demo HTML.
+`/projects/` replaces Examples in the main navigation. It shows the studio's own website as an own project and reserves clearly labelled space for future client-approved work and independent projects. No client case studies, approvals, results, or launch dates have been fabricated. Add actual work only with verified details and permission.
+
+The four fictional concepts remain available separately as **design studies** at `/websites/examples/` and their original demo URLs. Their shop basket and booking slots are memory-only simulations, not payment or reservation services. Edit demo content in `scripts/render-examples.mjs`, then build; do not hand-edit generated demo HTML.
+
+Pricing now has four compact desktop summaries, with complete scope and exclusions in keyboard-operable native disclosures. All four fit at 1280×800 in each language. Phones have a readable price overview rather than squeezed four-column cards. Opening details needs no JavaScript and does not alter the estimator or package contents.
 
 Packages are indicative one-off build ranges from €500, not binding offers. Content and rush allowances are transparent planning rules. Tax treatment, the total payable, recurring costs, and availability must be confirmed in a written proposal. See `ai_here/pricing-research.md` for checked competitor sources and comparison limits.
 
@@ -105,7 +111,9 @@ No payment gateway or online signature verification is implemented. The operatio
 
 ## Languages and easier navigation
 
-Pricing and Examples are now top-level navigation links, visible shortcuts on phones, and direct homepage calls to action. The shared build plugin applies this navigation consistently to every full page.
+Pricing and Projects are top-level links, visible phone shortcuts, and homepage actions. Studio and Contact now open their own pages instead of returning to homepage sections. The language dropdown comes before the finder button. `scripts/i18n-html.mjs` applies the shared shell and the Barlow Condensed/Manrope font request consistently to every full page.
+
+The dedicated contact page and legacy homepage form share `src/fragments/contact-composer.html`. Edit the form there, not in two pages. Both use the same existing mail API and state-preserving JavaScript; old `/#contact`, quiz handoffs, and selected-design links still work. The Vite plugin reloads either page when the fragment changes. The component is rendered into static output, so no-JavaScript visitors still get the PHP form fallback.
 
 English remains at `/`; Dutch, French, and German use `/nl/`, `/fr/`, and `/de/`. Localized HTML, internal links, metadata, hreflang alternates, and sitemap entries are generated automatically from the English sources. These pages work without JavaScript. With JavaScript, the language switcher changes language **without losing a typed inquiry, draft fields, or quiz progress**. It remembers only an explicit language choice; otherwise it detects the browser's supported language. Explicit localized URLs take priority.
 
@@ -124,7 +132,7 @@ npm run i18n:check
 npm run build
 ```
 
-The revised copy uses whole-message Google Translate drafts, LLM editorial/meaning review in all three languages, and LanguageTool checks—not the old sentence-fragment stitching. Dutch uses je/jouw; French vous/votre; German Sie/Ihr. The HTML-email follow-up adds manually curated copy; `src/i18n/editorial.json` now holds 587 curated messages across 981 source messages. Build checks protect prices, percentages, names, placeholders, register, and curated wording. Grammar reports are cached for targeted rechecks; no suggestions are applied automatically. The public endpoints are opt-in maintenance aids, not guaranteed services or visitor-time dependencies.
+The revised copy uses whole-message Google Translate drafts, LLM editorial/meaning review in all three languages, and LanguageTool checks—not the old sentence-fragment stitching. Dutch uses je/jouw; French vous/votre; German Sie/Ihr. Subsequent email and design-feedback copy is manually curated; `src/i18n/editorial.json` now holds 619 curated messages across 1,012 source messages. Build checks protect prices, percentages, names, placeholders, register, and curated wording. Grammar reports are cached for targeted rechecks; no suggestions are applied automatically. The public endpoints are opt-in maintenance aids, not guaranteed services or visitor-time dependencies.
 
 An optional offline fallback still uses the isolated Python environment in `scripts/requirements-i18n.txt`, selected by `HOTWIRE_I18N_PYTHON`: `node scripts/i18n.mjs translate --model-dir PATH_TO_MODELS --output CANDIDATES.json --download-models`. It now translates whole messages and writes only private draft candidates, never publishable catalogue values. Ordinary builds/hosting need no models, Python, API keys, paid service, or translation requests. Setup, review steps, and adding languages: `ai_here/languages.md`; quality evidence: `ai_here/translation-review.md`.
 
@@ -142,7 +150,7 @@ The owner confirmed live email is already configured. Its sender, recipient, tra
 
 The quiz generates two separate outputs: a plain-language website description for the visitor and a detailed inquiry brief for the studio. “Discuss this website” attaches the latter automatically; only name, email, and consent are then required. Extra notes are optional. Names, email addresses, and messages are never written to browser storage.
 
-Typography uses Space Grotesk headings and Manrope body text. Page/section entrances, quiz transitions, menu opening, and hover feedback use lightweight finite animations. Reduced-motion preferences disable them, and no content depends on animation or JavaScript to remain readable.
+Typography uses Barlow Condensed headings and Manrope body text/wordmark, with the original Hotwire colours and monogram. Marketing headings no longer receive decorative eyebrows; factual role/project labels remain where useful. Page/section entrances, quiz transitions, menu opening, and hover feedback use lightweight finite animations. Reduced-motion preferences disable them, and no content depends on animation or JavaScript to remain readable.
 
 ## Publishing
 

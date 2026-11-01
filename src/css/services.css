@@ -12,6 +12,27 @@
 .tier-list { list-style: disc; padding-left: 1.1rem; margin-bottom: 1rem; }
 .tier-list li + li { margin-top: 0.5rem; }
 .tier-cta { margin-top: auto; align-self: flex-start; }
+.pricing-page .page-intro { padding-block: calc(var(--header-offset) + 0.75rem) 1.5rem; }
+.pricing-page .page-title { font-size: clamp(2.5rem, 4vw, 3.5rem); margin-bottom: 0.5rem; }
+.pricing-format { margin-bottom: 0.5rem; color: #ff905f; font-size: 0.875rem; }
+.pricing-page .hero-intro { max-width: 75ch; font-size: 0.9375rem; line-height: 1.7; }
+.pricing-page .legal-updated { max-width: 110ch; margin-top: 0.75rem; font-size: 0.75rem; line-height: 1.7; }
+.pricing-overview { padding-block: 1.5rem 4rem; }
+.pricing-grid { align-items: start; gap: 1rem; }
+.pricing-grid .tier-card { padding: 1.25rem; border: 0; border-top: 2px solid var(--accent); background: #20211d; min-height: 21rem; }
+.pricing-grid .tier-name { margin-top: 0; font-size: 2rem; }
+.pricing-grid .tier-from { margin-block: 0.625rem 1rem; }
+.pricing-grid .tier-price { font: 600 clamp(1.25rem, 1.7vw, 1.625rem)/1.3 var(--font-heading); letter-spacing: 0; }
+.tier-overview { min-height: 4.5em; color: #d0d1c8; font-size: 0.875rem; line-height: 1.6; }
+.tier-details { margin-block: 0.75rem 1rem; }
+.tier-details summary { min-height: 2.75rem; padding-block: 0.625rem; color: #ffad87; font-size: 0.8125rem; cursor: pointer; text-underline-offset: 4px; }
+.tier-details summary:hover { text-decoration: underline; }
+.tier-details > div { padding-block: 0.75rem; border-top: 1px solid var(--line); }
+.pricing-grid .tier-cta { padding: 0.625rem 1rem; min-height: 2.75rem; font-size: 0.8125rem; }
+.pricing-quick { display: grid; gap: 0; margin-bottom: 2rem; border-top: 1px solid var(--line); }
+.pricing-quick a { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.25rem 1rem; padding-block: 0.875rem; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
+.pricing-quick a span { color: #ffad87; }
+.pricing-quick a:hover strong { text-decoration: underline; text-underline-offset: 4px; }
 .service-note { border-top: 1px solid var(--line); padding-top: 2.5rem; margin-top: 3rem; }
 .service-note h2 { font: 600 clamp(1.75rem, 3vw, 2.5rem)/1.2 var(--font-heading); margin-bottom: 1.5rem; }
 .service-note p { max-width: 75ch; color: var(--muted); line-height: 1.9; margin-block: 1rem; }
@@ -26,7 +47,7 @@
 .example-preview { position: relative; display: flex; flex-direction: column; overflow: hidden; min-height: 21rem; padding: clamp(1.5rem, 3vw, 2.5rem); color: #20251f; }
 .example-preview:focus-visible { outline-offset: 5px; }
 .preview-wordmark { font: 700 0.875rem/1.5 var(--font-heading); position: relative; z-index: 1; }
-.preview-headline { font: 600 clamp(2rem, 3.7vw, 3.5rem)/1.05 var(--font-heading); letter-spacing: -0.05em; margin-block: 2rem; position: relative; z-index: 1; }
+.preview-headline { font: 600 clamp(2rem, 3.7vw, 3.5rem)/1.05 var(--font-heading); letter-spacing: -0.01em; margin-block: 2rem; position: relative; z-index: 1; }
 .preview-caption { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.1em; margin-top: auto; position: relative; z-index: 1; }
 .preview-art { position: absolute; right: -1rem; bottom: -2rem; width: 45%; height: 70%; border-radius: 9rem 9rem 0 0; transform: rotate(-15deg); opacity: 0.6; }
 .preview-local { background: #e1e8d8; }
@@ -42,6 +63,14 @@
 #quiz-price-drivers { margin-top: 1rem; }
 @media (min-width: 768px) {
   .pricing-grid, .example-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+}
+@media (min-width: 1024px) {
+  .pricing-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .pricing-quick { display: none; }
+}
+@media print {
+  .pricing-grid { display: block; }
+  .tier-card { break-inside: avoid; }
 }
 @media (min-width: 1200px) {
   .comparison-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -10,7 +10,12 @@ export function i18nPlugin(root) {
   return {
     name: 'hotwire-localized-pages',
     configureServer(server) {
-      server.watcher.on('change', (file) => { if (file.replaceAll('\\', '/').includes('/src/i18n/messages/')) catalogs = undefined; });
+      server.watcher.add(resolve(root, 'src/fragments/contact-composer.html'));
+      server.watcher.on('change', (file) => {
+        const path = file.replaceAll('\\', '/');
+        if (path.includes('/src/i18n/messages/')) catalogs = undefined;
+        if (path.endsWith('/src/fragments/contact-composer.html')) server.ws.send({ type: 'full-reload' });
+      });
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url, ORIGIN);
         const { locale, path } = splitLocalePath(url.pathname);

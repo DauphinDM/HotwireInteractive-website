@@ -1,5 +1,7 @@
 # HTML inquiry emails — 31 October 2026
 
+Later design revision (1 November): the dedicated `/contact/` page and compatible homepage composer now share `src/fragments/contact-composer.html`. They retain this same API, transport, confirmation behaviour, and private-state safeguards. Web typography changes do not introduce remote fonts/images into emails; these templates still use inline system-font styling. See `design-feedback.md` for current site-wide copy/test totals; the dated implementation evidence below describes the email baseline.
+
 ## Implemented
 
 - `public/api/contact-mail.php`: matching clean HTML templates for the **studio inquiry** and **client confirmation**. Dark Hotwire masthead, orange accents, quiet white content, a server-generated reference, and clear contact/privacy footer. Inline styling, presentation tables, 600px maximum width with mobile padding, and Outlook conditional wrapper. No JavaScript, external CSS/fonts/images, or tracking.

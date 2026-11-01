@@ -1,4 +1,4 @@
-.demo-banner { padding-block: 8rem 2rem; font-size: 0.8125rem; line-height: 1.8; color: var(--muted); }
+.demo-banner { padding-block: calc(var(--header-offset) + 1rem) 2rem; font-size: 0.8125rem; line-height: 1.8; color: var(--muted); }
 .demo-banner > div { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.75rem; }
 .demo-banner a { padding-block: 0.5rem; color: #ff905f; text-decoration: underline; text-underline-offset: 4px; }
 .demo-surface { --demo-bg: #e1e8d8; --demo-ink: #253322; --demo-line: #9aa88f; --demo-button: #30472d; background: var(--demo-bg); color: var(--demo-ink); color-scheme: light; }
@@ -10,10 +10,10 @@
 .demo-brand-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center; padding-block: 1.5rem; border-bottom: 1px solid var(--demo-line); font-size: 0.8125rem; }
 .demo-brand-row a { padding-block: 0.5rem; }
 .demo-brand-row a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.demo-wordmark { flex: 1 1 100%; font: 700 1.5rem/1.2 var(--font-heading); letter-spacing: -0.05em; }
+.demo-wordmark { flex: 1 1 100%; font: 700 1.5rem/1.2 var(--font-heading); letter-spacing: -0.01em; }
 .demo-hero { display: grid; gap: 3rem; padding-block: clamp(3rem, 7vw, 7rem); align-items: center; }
 .demo-eyebrow { font-size: 0.75rem; letter-spacing: 0.04em; margin-bottom: 1.5rem; }
-.demo-hero h1 { font: 600 clamp(2.75rem, 6.5vw, 6rem)/1.02 var(--font-heading); letter-spacing: -0.06em; }
+.demo-hero h1 { font: 600 clamp(2.75rem, 6.5vw, 6rem)/1.02 var(--font-heading); letter-spacing: -0.01em; }
 .theme-portfolio .demo-hero h1 { font-weight: 500; }
 .theme-booking h1, .theme-booking h2 { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.05em; }
 .demo-hero p:not(.demo-eyebrow) { max-width: 40ch; line-height: 1.9; margin-block: 1.5rem; }
@@ -30,7 +30,7 @@
 .art-still { background: #cad9d1; }
 .art-still span { position: absolute; inset: 15% 20% 0; border-radius: 12rem 12rem 0 0; background: #829c98; box-shadow: -3rem -1rem 0 #b1c3b6; }
 .demo-section { padding-block: clamp(2.5rem, 6vw, 5rem); border-top: 1px solid var(--demo-line); }
-.demo-section h2 { font: 500 clamp(2rem, 4vw, 3.25rem)/1.1 var(--font-heading); letter-spacing: -0.045em; max-width: 24ch; margin-bottom: 2rem; }
+.demo-section h2 { font: 500 clamp(2rem, 4vw, 3.25rem)/1.1 var(--font-heading); letter-spacing: -0.01em; max-width: 24ch; margin-bottom: 2rem; }
 .demo-section p { font-size: 0.9375rem; line-height: 1.9; max-width: 65ch; margin-block: 1rem; }
 .demo-grid, .demo-projects, .demo-split { display: grid; gap: 2rem; }
 .demo-grid article { border-top: 1px solid var(--demo-line); padding-top: 1.5rem; min-width: 0; }

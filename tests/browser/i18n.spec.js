@@ -9,18 +9,18 @@ async function changeLanguage(page, locale) {
   await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGES[locale].html);
 }
 
-test('packages and examples are first-level navigation and visible phone shortcuts', async ({ page }) => {
+test('packages and projects are first-level navigation and visible phone shortcuts', async ({ page }) => {
   await page.goto('/');
-  for (const path of ['/websites/pricing/', '/websites/examples/']) {
+  for (const path of ['/websites/pricing/', '/projects/']) {
     await expect(page.locator(`.desktop-nav a[href="${path}"]`)).toBeVisible();
     await expect(page.locator(`.hero-actions a[href="${path}"]`)).toBeVisible();
   }
   await page.setViewportSize({ width: 320, height: 812 });
-  for (const path of ['/websites/pricing/', '/websites/examples/']) await expect(page.locator(`.header-shortcuts a[href="${path}"]`)).toBeVisible();
+  for (const path of ['/websites/pricing/', '/projects/']) await expect(page.locator(`.header-shortcuts a[href="${path}"]`)).toBeVisible();
 });
 
 for (const locale of ['nl', 'fr', 'de']) {
-  for (const path of ['/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', '/privacy/', '/terms/', '/cookies/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/websites/examples/local/', '/websites/examples/portfolio/', '/websites/examples/shop/', '/websites/examples/booking/']) {
+  for (const path of ['/', '/studio/', '/contact/', '/projects/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', '/privacy/', '/terms/', '/cookies/', '/team/', '/team/dauphindm/', '/team/liamvl/', '/websites/examples/local/', '/websites/examples/portfolio/', '/websites/examples/shop/', '/websites/examples/booking/']) {
     test(`${locale}${path} has static translations, localized links, and accessible phone/desktop layouts`, async ({ page }) => {
       test.setTimeout(45_000);
       for (const width of [320, 1440]) {
@@ -34,7 +34,8 @@ for (const locale of ['nl', 'fr', 'de']) {
         expect(axe.violations).toEqual([]);
         await expect(page.locator('main h1')).toBeVisible();
         if (path === '/') {
-          expect(await page.evaluate(() => document.querySelector('.hero .eyebrow').getBoundingClientRect().top >= document.getElementById('navbar').getBoundingClientRect().bottom)).toBeTruthy();
+          expect(await page.evaluate(() => document.querySelector('.hero-title').getBoundingClientRect().top >= document.getElementById('navbar').getBoundingClientRect().bottom)).toBeTruthy();
+          await expect(page.locator('.hero .eyebrow')).toHaveCount(0);
           await expect(page.locator('#message')).toHaveAttribute('placeholder', t('Tell us what you have in mind…', {}, locale));
           await expect(page.locator('#website-note-title')).toHaveText(t('What should', {}, locale) + t('yours do?', {}, locale));
           await page.screenshot({ path: test.info().outputPath(`${locale}-${width}.png`), fullPage: true });

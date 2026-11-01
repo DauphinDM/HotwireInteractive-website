@@ -27,6 +27,9 @@ dist/
 ├── .htaccess
 ├── index.html
 ├── 404.html
+├── studio/index.html
+├── contact/index.html
+├── projects/index.html
 ├── privacy/index.html
 ├── terms/index.html
 ├── cookies/index.html
@@ -88,6 +91,9 @@ Vite’s local preview does not execute Apache rules. If using another host, con
 - Open `/privacy/`, `/terms/`, and `/cookies/` directly; check all footer links and the notices beside the contact consent checkbox.
 
 - Open `/`, `/team/`, and both profile pages directly and refresh each one.
+- Open `/studio/`, `/contact/`, `/projects/` and their `/nl/`, `/fr/`, `/de/` equivalents directly. Verify primary navigation uses these pages, language precedes the finder CTA, and new routes are present in the sitemap. Upload the complete fresh build; these new files may be ignored by git despite older output being tracked.
+- Compare all four package summaries at 1280×800; open their full scope/exclusions by keyboard and without JavaScript. On phones, check the four-row overview and readable stacked details. Ranges, tax warnings, and estimator rules must not change with the presentation.
+- Verify the projects page labels the own website, unpublished work slots, and fictional studies honestly. Test both `/contact/` and the backwards-compatible `/#contact` form/quiz handoff without sending real mail unless authorised.
 - Check `/team.html` redirects and an unknown URL returns status 404 with the recovery page.
 - Check `/robots.txt`, `/sitemap.xml`, and `/social-websites.png` load.
 - Check keyboard navigation, the mobile menu, and the page at 320px width.

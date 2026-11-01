@@ -2,7 +2,7 @@
 export default {
   content: {
     relative: true,
-    files: ["./*.html", "./websites/**/*.html", "./team/**/*.html", "./privacy/**/*.html", "./terms/**/*.html", "./cookies/**/*.html", "./src/**/*.{js,html}"],
+    files: ["./*.html", "./studio/**/*.html", "./contact/**/*.html", "./projects/**/*.html", "./websites/**/*.html", "./team/**/*.html", "./privacy/**/*.html", "./terms/**/*.html", "./cookies/**/*.html", "./src/**/*.{js,html}"],
   },
   darkMode: 'class',
   theme: {
@@ -30,7 +30,7 @@ export default {
       },
       fontFamily: {
         sans: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Space Grotesk', 'Arial', 'sans-serif'],
+        display: ['Barlow Condensed', 'Arial Narrow', 'Arial', 'sans-serif'],
         mono: ['ui-monospace', 'monospace'],
       },
       boxShadow: {

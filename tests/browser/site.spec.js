@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const demos = ['local', 'portfolio', 'shop', 'booking'].map((id) => `/websites/examples/${id}/`);
-const pages = ['/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', ...demos, '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
+const pages = ['/', '/studio/', '/contact/', '/projects/', '/websites/', '/websites/pricing/', '/websites/examples/', '/websites/agreement/', ...demos, '/team/', '/team/dauphindm/', '/team/liamvl/', '/privacy/', '/terms/', '/cookies/', '/404.html'];
 const publicPages = pages.filter((path) => path !== '/404.html' && !demos.includes(path));
 
 async function ready(page, path) {
@@ -33,6 +33,10 @@ for (const path of pages) {
       });
       expect(overflow).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+      if (demos.includes(path)) {
+        const bounds = await page.evaluate(() => ({ header: document.getElementById('navbar').getBoundingClientRect().bottom, notice: document.querySelector('.demo-banner strong').getBoundingClientRect().top }));
+        expect(bounds.notice).toBeGreaterThanOrEqual(bounds.header);
+      }
       expect(errors).toEqual([]);
       if (width === 375 || width === 1440) {
         await page.screenshot({ path: testInfo.outputPath(`page-${width}.png`), fullPage: true });
@@ -114,7 +118,7 @@ for (const path of [...publicPages, ...demos]) {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     const socialURL = new URL(await page.locator('meta[property="og:image"]').getAttribute('content'));
-    const image = await page.request.get(socialURL.pathname);
+    const image = await page.request.get(socialURL.pathname + socialURL.search);
     expect(image.ok()).toBeTruthy();
     expect(image.headers()['content-type']).toContain('image/png');
     const bytes = await image.body();
@@ -131,16 +135,16 @@ test('skip link moves keyboard focus past navigation', async ({ page }) => {
   await expect(page.locator('main')).toBeFocused();
 });
 
-test('mobile contact link lands below the fixed header and closes the menu', async ({ page }) => {
+test('mobile contact navigation opens its dedicated page below the fixed header', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await ready(page, '/');
   await page.getByRole('button', { name: 'Open navigation' }).click();
   await page.getByRole('navigation', { name: 'Mobile navigation' }).getByRole('link', { name: 'Contact' }).click();
   await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeHidden();
-  await expect(page).toHaveURL(/#contact$/);
+  await expect(page).toHaveURL('/contact/');
   const bounds = await page.evaluate(() => ({
     header: document.getElementById('navbar').getBoundingClientRect().bottom,
-    contact: document.getElementById('contact').getBoundingClientRect().top,
+    contact: document.querySelector('#contact h1').getBoundingClientRect().top,
   }));
   expect(bounds.contact).toBeGreaterThanOrEqual(bounds.header);
 });

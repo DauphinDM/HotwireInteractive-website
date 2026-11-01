@@ -8,23 +8,27 @@ Visitors should understand the services, get an indicative scope-led estimate fr
 
 ## Design direction
 
-Keep the existing Hotwire orange and monogram. Use the visual language of a small working studio: direct descriptions, a useful project brief, and room for the actual people. Let the orange website-finder panel be the main visual gesture. The services section is an open list on a pale surface, not another set of identical cards.
+Keep the existing Hotwire orange and monogram. Following the owner's Dutch-language peer feedback on 1 November 2026, use a more editorial, workshop-like identity: a large condensed headline, an enlarged version of the actual monogram with wire paths, open project rows, and a quiet paper-coloured finder strip. Avoid another headline-plus-filled-card composition or decorative labels above every heading. This is a subjective design direction, not a claim that the site was made without AI.
 
-- **Palette:** charcoal `#11110f`, elevated charcoal `#1b1c19`, Hotwire orange `#ff5d1b`, pale grey-green `#e8ebe6`, light-surface ink `#20251f`, muted text `#b8b8ad`.
-- **Type:** Space Grotesk for the wordmark and larger headings; Manrope for reading and controls. Sentence case, apart from the established wordmark. Sizes are adjusted for the wider heading face.
-- **Layout:** homepage with studio introduction and contact; `/websites/` has services and the ten-question finder, with separate pricing, examples, and agreement pages. Pale service backgrounds span the viewport; inner content shares the header and quiz gutters.
-- **Discoverability:** Pricing and Examples are first-level links, with persistent phone shortcuts and direct homepage actions—not only links at the bottom of services. A shared build-time shell keeps them consistent.
+- **Palette:** charcoal `#11110f`, elevated charcoal `#1b1c19`, Hotwire orange `#ff5d1b`, warm paper `#eae7df`, light-surface ink `#20251f`, muted text `#b8b8ad`.
+- **Type:** Barlow Condensed for headings; Manrope for the established wordmark, reading, and controls. Sentence case except the wordmark. Reduce the tight tracking inherited from the old wider face. The single shared font request is set by `enhanceShell()`; the privacy notice discloses the actual fonts/provider.
+- **Layout:** homepage with the open typographic hero, a full-width finder strip, a project index, and the existing studio/contact sections. `/studio/`, `/contact/`, and `/projects/` are proper destinations. The legacy homepage inquiry route remains functional rather than redirecting or discarding typed data.
+- **Discoverability:** Pricing and Projects are first-level links, persistent phone shortcuts, and direct homepage actions. Studio/Contact no longer point to homepage fragments. Language selection precedes the finder button in both visual and keyboard order. A shared build-time shell applies this consistently, including demos.
+- **Projects:** show Hotwire's own website as an own project, with explicitly unpublished client-work and independent-project placeholders. Keep fictional demos separately labelled as design studies at their existing URLs. No invented commissions, launches, client permissions, testimonials, or results.
+- **Pricing:** four compact summary columns at desktop widths, tested together at 1280×800 in all four languages. Preserve complete scope, best-fit and exclusion copy inside native `<details>` disclosures. Mobile has a readable four-row price index and ordinary stacked cards, not tiny desktop columns or a carousel. Estimates/tax/recurring-cost warnings stay visible.
 - **Languages:** English sources generate Dutch/French/German routes. A visible endonym-based switcher changes language in place, preserving form and quiz state; native links work without JavaScript. Detection uses browser languages, not IP geolocation. Only explicit language choices persist, as a language code. User text is never translated.
 - **Motion:** short page/section entrances, quiz and navigation transitions, and hover feedback. No loops or ambient particles; content stays readable without JavaScript. Reduced-motion preferences disable animations, including running ones.
 - **Pickers:** the owner's reference is native CSS `::picker(select)`, not a third-party library. The shared stylesheet progressively enables `appearance: base-select` on eligible selects and their pickers within `@supports`. Keep browser-managed positioning, keyboard selection, focus restoration, and the standard-select fallback. Radio-card questions remain native radios; do not convert them just to use this pseudo-element.
 - **Copy:** name the work and explain next steps. Replace slogans such as “a new chapter, our own way” with concrete website and studio information.
 
 ```text
-Brand                         Websites  Studio  Team  Contact
-We design and build           What should yours do?
-websites.                     [Inquiries] [Bookings] [Sales]
+Brand       Websites  Pricing  Projects  Studio  Team  Contact   Language  Find your website
+We design and build                           Actual Hotwire monogram
+websites.                                    and wire paths
 
-Independent studio            Website work + own projects + real team
+What should yours do?          [Inquiries] [Bookings] [Sales]
+Projects                       Own website; honest future-work placeholders
+Independent studio             Website work + own projects + real team
 
 Tell us about your project    Contact composer + optional quiz brief
 
@@ -46,7 +50,7 @@ Demo baskets, booking slots, and agreement drafting run locally and create no tr
 
 The owner has not registered the company yet. Registration, tax details, and approved final service terms remain deferred; keep working on the inquiry/planning interface without inventing a legal entity or enabling final commercial issuance. The appropriate actual operator/controller identification for any public site still needs confirmation.
 
-## GitHub research
+## Prior GitHub design research
 
 Reviewed these public repositories and their skill documentation for this revision:
 
