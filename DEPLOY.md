@@ -68,7 +68,7 @@ Vite dev/preview intentionally returns a 503 JSON explanation for `/api/` rather
 1. Back up the currently deployed files and any server-specific `.htaccess` rules.
 2. Enable HTTPS for `hotwireinteractive.co.uk` in DirectAdmin’s SSL settings. Enable certificates for any redirecting aliases too.
 3. Upload the **contents** of `dist/` to the document root using SFTP or DirectAdmin File Manager. Include `.htaccess` (enable hidden-file visibility).
-4. Upload new fingerprinted assets before the HTML that references them, or deploy the directory atomically. Retain prior hashed assets briefly for visitors with older HTML.
+4. Upload new fingerprinted assets and the refreshed `social-websites.png` before the HTML that references them, or deploy the directory atomically. Retain prior hashed assets briefly for visitors with older HTML.
 5. Merge any necessary hosting-specific rules into `.htaccess`. On TLS-terminating reverse proxies, use the host’s HTTPS redirect configuration to avoid redirect loops.
 
 ## Routing and caching
@@ -101,3 +101,10 @@ Vite’s local preview does not execute Apache rules. If using another host, con
 - Complete the website-fit quiz, revise an answer, and attach the result to a contact inquiry. Confirm previously entered contact details are preserved.
 - Test a social preview after publication; services may cache the old image or metadata.
 - Verify live redirect, caching, and compression headers with your hosting tools. Local browser tests cannot verify the production web server configuration.
+
+## Social banners and Discord
+
+- The share image is a public **1200×630 PNG**, not the SVG favicon or a JavaScript-rendered screenshot. Edit `public/social-websites.svg`, run `npm run build:social`, then rebuild and upload the complete output. The HTML's `og:image` and `twitter:image` URLs include an image-content revision; the canonical page URL stays unchanged.
+- Inspect the deployed page's original HTML source, not only its JavaScript DOM. It must contain one absolute HTTPS image URL, `og:image:secure_url`, `image/png`, width/height, alt text, and `twitter:card=summary_large_image`. Open the exact versioned image URL without cookies or a login; it must return real PNG bytes with HTTP 200 and `Content-Type: image/png`, not an HTML fallback or bot challenge. Keep robots/crawler access enabled.
+- Discord can cache both page metadata and image responses, and existing messages may retain an older preview. After uploading, try a newly posted URL such as `https://hotwireinteractive.co.uk/?preview=20261101` to request a fresh fetch; this is a troubleshooting aid, not a guaranteed cache purge. Do not wrap the link in angle brackets, which suppress embeds. Check Discord's link-preview setting and the channel's Embed Links permission if previews remain absent.
+- Successful requests with a Discord-style user agent verify the site's public responses from the test connection, not actual Discord-server access or a particular account/channel configuration. No Discord credentials, message posting, or live mail test is needed for these read-only checks.

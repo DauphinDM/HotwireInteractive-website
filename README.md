@@ -115,6 +115,8 @@ Pricing and Projects are top-level links, visible phone shortcuts, and homepage 
 
 The dedicated contact page and legacy homepage form share `src/fragments/contact-composer.html`. Edit the form there, not in two pages. Both use the same existing mail API and state-preserving JavaScript; old `/#contact`, quiz handoffs, and selected-design links still work. The Vite plugin reloads either page when the fragment changes. The component is rendered into static output, so no-JavaScript visitors still get the PHP form fallback.
 
+The shared shell also supplies the actual Hotwire logo/wordmark to any full-page footer that omitted it, including Contact, Projects, Studio, and the studies. Page-specific footer links and legal copy remain intact; the logo links to the current language's homepage.
+
 English remains at `/`; Dutch, French, and German use `/nl/`, `/fr/`, and `/de/`. Localized HTML, internal links, metadata, hreflang alternates, and sitemap entries are generated automatically from the English sources. These pages work without JavaScript. With JavaScript, the language switcher changes language **without losing a typed inquiry, draft fields, or quiz progress**. It remembers only an explicit language choice; otherwise it detects the browser's supported language. Explicit localized URLs take priority.
 
 The checked-in catalogues cover the current pages, interface, quiz/results, and standalone PHP form. Prices use locale-aware EUR display. User messages and draft fields are never translated or uploaded. Contact submissions include a validated communication-language preference; sender/recipient and mail transport settings are unchanged.
@@ -140,7 +142,9 @@ Software checks and LLM review are **not certified legal translations** or nativ
 
 ## Social artwork
 
-`public/social-websites.png` is the current 1200×630 social preview. Its editable source is `public/social-websites.svg`. After editing the SVG, run `npm run build:social` with a Playwright browser installed (or `PLAYWRIGHT_CHANNEL=msedge`/`chrome`), then rebuild the site. The generated PNG is included with the other public artwork, so ordinary builds do not need a browser.
+`public/social-websites.png` is the current 1200×630 social banner, refreshed to match the open hero/monogram design without the outdated four-question claim. Its editable source is `public/social-websites.svg`. After editing the SVG, run `npm run build:social` with a Playwright browser installed (or `PLAYWRIGHT_CHANNEL=msedge`/`chrome`), then rebuild the site. Rendering uses system fonts and blocks external requests. The generated PNG is included with the other public artwork, so ordinary builds do not need a browser.
+
+The shared HTML shell supplies one complete static Open Graph image group (HTTPS URL, secure URL, PNG type, dimensions, and localized alt) and matching `summary_large_image` Twitter metadata on shareable pages. Its image URL includes a short SHA-256 revision derived from the PNG when the build/dev process starts. This changes when the image bytes change without changing canonical page URLs. Upload the PNG before the HTML, and restart a running dev server after regenerating artwork. Social services may still cache the page metadata or old messages; website code cannot force a Discord cache purge. See `DEPLOY.md` for checks and `ai_here/social-preview.md` for the read-only live diagnosis.
 
 ## Contact behaviour
 
